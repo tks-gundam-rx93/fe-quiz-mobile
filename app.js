@@ -1,6 +1,8 @@
 (() => {
   const questions = window.FE_QUESTIONS || [];
-  const STORAGE_KEY = "fe-quiz-mobile-v1";
+  const QUIZ_ROUND = 4;
+  // 回ごとに保存領域を分離する。新しい回は必ず全問未選択で開始する。
+  const STORAGE_KEY = `fe-quiz-mobile-round-${QUIZ_ROUND}`;
   const state = loadState();
   let current = Math.min(state.current || 0, Math.max(questions.length - 1, 0));
 
@@ -73,7 +75,7 @@
     });
   }
   function showSubmit() {
-    const lines = ["FE予測問題 回答"];
+    const lines = [`FE予測問題 第${QUIZ_ROUND}回 回答`];
     questions.forEach(q => {
       const a = state.answers[q.id];
       lines.push(`問${q.id}. ${a === undefined ? "未回答" : String.fromCharCode(65+a)}`);
