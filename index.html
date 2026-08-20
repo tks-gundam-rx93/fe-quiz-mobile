@@ -13,11 +13,36 @@
 <body>
   <div class="app-shell">
     <header class="app-header">
-      <div><p class="eyebrow">FE 9/6 合格作戦</p><h1>予測問題　第4回</h1></div>
-      <button id="overviewBtn" class="icon-btn" type="button" aria-label="問題一覧">☰</button>
+      <div><p class="eyebrow">FE 9/6 合格作戦</p><h1 id="appTitle">学習メニュー</h1></div>
+      <button id="homeBtn" class="icon-btn" type="button" aria-label="ホーム">⌂</button>
     </header>
     <main>
-      <section id="quizView">
+      <section id="homeView" class="home-view">
+        <div class="hero-card">
+          <h2>今日の学習</h2>
+          <p>通常の予測問題と、科目A用語を反射的に答える「3秒特訓」を使い分けます。</p>
+        </div>
+        <div class="mode-grid">
+          <button id="startQuizBtn" class="mode-card" type="button">
+            <span class="mode-kicker">本番対策</span>
+            <strong>予測問題　第4回</strong>
+            <span>20問・一括回答・提出用テキスト生成</span>
+          </button>
+          <button id="startDrillBtn" class="mode-card accent-card" type="button">
+            <span class="mode-kicker">科目A 暗記</span>
+            <strong>3秒特訓</strong>
+            <span>20問・即時判定・間違い比較・間隔反復</span>
+          </button>
+        </div>
+        <div class="stats-card">
+          <h3>3秒特訓 学習状況</h3>
+          <div class="stats-row"><span>累計回答</span><strong id="drillAttempts">0</strong></div>
+          <div class="stats-row"><span>累計正解率</span><strong id="drillAccuracy">-</strong></div>
+          <div class="stats-row"><span>今日の復習対象</span><strong id="drillDue">0</strong></div>
+        </div>
+      </section>
+
+      <section id="quizView" hidden>
         <div class="progress-row"><span id="counter"></span><span id="answeredCount"></span></div>
         <div class="progress"><div id="progressBar"></div></div>
         <article class="question-card">
@@ -30,6 +55,32 @@
         <nav class="nav-row"><button id="prevBtn" class="secondary" type="button">← 前へ</button><button id="nextBtn" class="primary" type="button">次へ →</button></nav>
         <button id="submitBtn" class="submit" type="button">回答を提出</button>
       </section>
+
+      <section id="drillView" hidden>
+        <div class="progress-row"><span id="drillCounter"></span><span id="drillScore"></span></div>
+        <div class="progress drill-progress"><div id="drillProgressBar"></div></div>
+        <article class="question-card drill-card">
+          <div class="meta"><span class="badge">科目A</span><span id="drillCategory" class="badge soft"></span><span id="drillTimer" class="timer-badge">3</span></div>
+          <p class="drill-label">このキーワードから3秒で連想</p>
+          <h2 id="drillPrompt" class="drill-prompt"></h2>
+          <div id="drillOptions" class="options"></div>
+          <div id="drillFeedback" class="feedback" hidden>
+            <strong id="feedbackTitle"></strong>
+            <p id="feedbackExplain"></p>
+            <p id="feedbackContrast" class="contrast"></p>
+          </div>
+        </article>
+        <button id="drillNextBtn" class="primary full" type="button" hidden>次の問題へ →</button>
+        <button id="endDrillBtn" class="secondary full" type="button">特訓を終了</button>
+      </section>
+
+      <section id="drillResultView" class="result-view" hidden>
+        <h2>3秒特訓 結果</h2>
+        <div id="drillResultSummary" class="result-summary"></div>
+        <button id="retryWrongBtn" class="primary full" type="button">間違えた問題を再特訓</button>
+        <button id="drillHomeBtn" class="secondary full" type="button">学習メニューへ</button>
+      </section>
+
       <section id="resultView" class="result-view" hidden>
         <h2>第4回 提出用回答</h2>
         <p>下のテキストをコピーしてChatGPTへ貼り付けてください。正解はこのアプリには入っていません。</p>
@@ -37,6 +88,7 @@
         <button id="copyBtn" class="primary full" type="button">回答をコピー</button>
         <button id="backBtn" class="secondary full" type="button">問題に戻る</button>
       </section>
+
       <section id="overviewView" class="overview-view" hidden>
         <div class="overview-head"><h2>第4回 問題一覧</h2><button id="closeOverviewBtn" class="icon-btn" type="button">✕</button></div>
         <div id="overviewGrid" class="overview-grid"></div>
@@ -44,6 +96,7 @@
     </main>
   </div>
   <script src="./questions.js"></script>
+  <script src="./terms.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
