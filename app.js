@@ -1,7 +1,7 @@
 (() => {
   const questions = window.FE_QUESTIONS || [];
   const terms = window.FE_TERMS || [];
-  const QUIZ_ROUND = 4;
+  const QUIZ_ROUND = window.FE_ROUND || 4;
   const QUIZ_KEY = `fe-quiz-mobile-round-${QUIZ_ROUND}`;
   const DRILL_KEY = "fe-term-drill-v1";
   const SESSION_SIZE = 20;
@@ -15,7 +15,6 @@
   function shuffledIndexes(n){ const a=Array.from({length:n},(_,i)=>i); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
   function buildExamQuestion(q){
-    const answer=q.options[q.answer];
     const p=q.prompt;
     if(q.cat==="ネットワーク") return `ネットワークに関する次の記述に該当するものはどれか。\n「${p}」`;
     if(q.cat==="セキュリティ") return `情報セキュリティに関する次の記述に該当する用語又は仕組みはどれか。\n「${p}」`;
@@ -29,7 +28,6 @@
     return `次の記述に該当する用語として、最も適切なものはどれか。\n「${p}」`;
   }
 
-  // ---------- 通常予測問題 ----------
   const quizState=loadQuizState();
   let current=Math.min(quizState.current||0,Math.max(questions.length-1,0));
   function blankQuizState(){ return {answers:{},review:{},current:0}; }
@@ -54,7 +52,6 @@
   function showSubmit(){ const lines=[`FE予測問題 第${QUIZ_ROUND}回 回答`];questions.forEach(q=>{const a=quizState.answers[q.id];lines.push(`問${q.id}. ${a===undefined?"未回答":String.fromCharCode(65+a)}`);}); const reviewIds=questions.filter(q=>quizState.review[q.id]).map(q=>`問${q.id}`);if(reviewIds.length)lines.push("",`見直し指定: ${reviewIds.join(", ")}`); el("resultText").value=lines.join("\n");showView("resultView");setTitle(`予測問題　第${QUIZ_ROUND}回`);window.scrollTo({top:0,behavior:"smooth"}); }
   async function copyResult(){const text=el("resultText").value;try{await navigator.clipboard.writeText(text);toast("回答をコピーしました");}catch(_){el("resultText").focus();el("resultText").select();document.execCommand("copy");toast("回答をコピーしました");}}
 
-  // ---------- 科目A 3秒特訓 ----------
   const drillState=loadDrillState();
   let drillSession=[],drillIndex=0,drillCorrect=0,drillWrong=[],drillAnswered=false,timerId=null,timerValue=3;
   function blankDrillState(){return {items:{},attempts:0,correct:0};}
