@@ -48,5 +48,13 @@ window.FE_TERMS = [
 {id:47,cat:"AI",prompt:"教師データに正解ラベルがある",options:["教師あり学習","教師なし学習","強化学習","クラスタリングだけ"],answer:0,explain:"教師あり学習は入力データと正解ラベルの組を用いて学習する。",contrast:"教師なし学習は正解ラベルなし。"},
 {id:48,cat:"AI",prompt:"正解ラベルなしでデータの構造を見つける",options:["教師なし学習","教師あり学習","強化学習","回帰だけ"],answer:0,explain:"教師なし学習はラベルなしデータからクラスタや特徴構造を見つける。",contrast:"教師あり学習は正解ラベルあり。"},
 {id:49,cat:"クラウド",prompt:"OSやミドルウェアを意識せずアプリ実行基盤を利用",options:["PaaS","IaaS","SaaS","DaaS"],answer:0,explain:"PaaSはアプリケーション実行・開発基盤をサービスとして提供する。",contrast:"IaaSは仮想サーバ等、SaaSは完成済みアプリ。"},
-{id:50,cat:"クラウド",prompt:"完成したアプリケーションをサービスとして利用",options:["SaaS","PaaS","IaaS","RAID"],answer:0,explain:"SaaSは利用者が完成したソフトウェア機能をネット経由で利用する。",contrast:"PaaSはアプリ実行基盤、IaaSはインフラ。"}
+{id:50,cat:"クラウド",prompt:"完成したアプリケーションをサービスとして利用",options:["SaaS","PaaS","IaaS","RAID"],answer:0,explain:"SaaSは利用者が完成したソフトウェア機能をネット経由で利用する。",contrast:"PaaSはアプリ実行基盤、IaaSはインフラ。"},
+{id:51,cat:"ネットワーク",prompt:"IPv4 /27 のIPアドレス総数",options:["32","30","16","64"],answer:0,explain:"/27はホスト部が5ビットなので、IPアドレス総数は2^5=32個。",contrast:"利用可能ホスト数ならネットワークアドレスとブロードキャストアドレスを除いて30個。"},
+{id:52,cat:"ネットワーク",prompt:"IPv4 /28 の利用可能ホスト数",options:["14","16","12","30"],answer:0,explain:"/28はホスト部4ビットで総数16個。ネットワークとブロードキャストを除き14個利用できる。",contrast:"総アドレス数を聞かれた場合は16個。"},
+{id:53,cat:"セキュリティ",prompt:"受信者だけに読ませる公開鍵暗号：暗号化に使う鍵",options:["受信者の公開鍵","受信者の秘密鍵","送信者の公開鍵","送信者の秘密鍵"],answer:0,explain:"機密性を目的とする公開鍵暗号では、送信者は受信者の公開鍵で暗号化し、受信者が自分の秘密鍵で復号する。",contrast:"デジタル署名では署名者の秘密鍵を使う点と区別する。"},
+{id:54,cat:"PM",prompt:"EVM：SPI の計算式",options:["EV ÷ PV","EV ÷ AC","EV − PV","EV − AC"],answer:0,explain:"SPI（Schedule Performance Index）= EV / PV。1未満なら計画より遅れている。",contrast:"CPI=EV/AC、SV=EV−PV、CV=EV−AC。"},
+{id:55,cat:"開発",prompt:"スクラム：機能・改善項目を優先順位付きで管理",options:["プロダクトバックログ","スプリントレビュー","インクリメント","バーンダウンチャート"],answer:0,explain:"プロダクトバックログは、プロダクトに必要な機能・改善などを優先順位付きで管理する一覧。",contrast:"スプリントは開発期間、インクリメントは完成した成果の増分。"},
+{id:56,cat:"DB",prompt:"ACID：同時実行でも互いに不適切な影響を与えない",options:["Isolation","Atomicity","Consistency","Durability"],answer:0,explain:"Isolation（独立性・分離性）は、複数トランザクションを同時実行しても互いの処理が不適切に干渉しない性質。",contrast:"Atomicityは全て成功か全て取消し、Durabilityは確定結果の永続性。"},
+{id:57,cat:"ストラテジ",prompt:"PPM：高成長率 × 高市場占有率",options:["花形（Star）","金のなる木","問題児","負け犬"],answer:0,explain:"PPMで市場成長率・相対的市場占有率ともに高い事業は花形（Star）。",contrast:"高占有率・低成長率は金のなる木、低占有率・高成長率は問題児。"},
+{id:58,cat:"ハードウェア",prompt:"RAID1：同じデータを複数ディスクへ保存",options:["ミラーリング","ストライピング","パリティ分散","データ圧縮"],answer:0,explain:"RAID1は同じデータを複数ディスクへ書き込むミラーリングで冗長性を確保する。",contrast:"RAID0はストライピングで、単独では冗長性を持たない。"}
 ];
