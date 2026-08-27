@@ -56,5 +56,13 @@ window.FE_TERMS = [
 {id:55,cat:"開発",prompt:"スクラム：機能・改善項目を優先順位付きで管理",options:["プロダクトバックログ","スプリントレビュー","インクリメント","バーンダウンチャート"],answer:0,explain:"プロダクトバックログは、プロダクトに必要な機能・改善などを優先順位付きで管理する一覧。",contrast:"スプリントは開発期間、インクリメントは完成した成果の増分。"},
 {id:56,cat:"DB",prompt:"ACID：同時実行でも互いに不適切な影響を与えない",options:["Isolation","Atomicity","Consistency","Durability"],answer:0,explain:"Isolation（独立性・分離性）は、複数トランザクションを同時実行しても互いの処理が不適切に干渉しない性質。",contrast:"Atomicityは全て成功か全て取消し、Durabilityは確定結果の永続性。"},
 {id:57,cat:"ストラテジ",prompt:"PPM：高成長率 × 高市場占有率",options:["花形（Star）","金のなる木","問題児","負け犬"],answer:0,explain:"PPMで市場成長率・相対的市場占有率ともに高い事業は花形（Star）。",contrast:"高占有率・低成長率は金のなる木、低占有率・高成長率は問題児。"},
-{id:58,cat:"ハードウェア",prompt:"RAID1：同じデータを複数ディスクへ保存",options:["ミラーリング","ストライピング","パリティ分散","データ圧縮"],answer:0,explain:"RAID1は同じデータを複数ディスクへ書き込むミラーリングで冗長性を確保する。",contrast:"RAID0はストライピングで、単独では冗長性を持たない。"}
+{id:58,cat:"ハードウェア",prompt:"RAID1：同じデータを複数ディスクへ保存",options:["ミラーリング","ストライピング","パリティ分散","データ圧縮"],answer:0,explain:"RAID1は同じデータを複数ディスクへ書き込むミラーリングで冗長性を確保する。",contrast:"RAID0はストライピングで、単独では冗長性を持たない。"},
+{id:59,cat:"ネットワーク",prompt:"1個のグローバルIPv4アドレスをポート番号で複数端末に対応付け",options:["NAPT","ARP","DHCP","DNS"],answer:0,explain:"NAPTはIPアドレスとポート番号を変換し、複数端末で一つのグローバルIPv4アドレスを共有する。",contrast:"NATは基本的にIPアドレスを変換し、NAPTはポート番号も利用する。"},
+{id:60,cat:"セキュリティ",prompt:"DNSキャッシュへ偽情報を登録し不正サイトへ誘導",options:["DNSキャッシュポイズニング","CSRF","XSS","SQLインジェクション"],answer:0,explain:"DNSキャッシュポイズニングは偽の名前解決情報をキャッシュへ混入させる攻撃。",contrast:"XSSはブラウザ上で不正スクリプトを実行させる。"},
+{id:61,cat:"DB",prompt:"ACID：処理前後で整合性制約を維持",options:["Consistency","Atomicity","Isolation","Durability"],answer:0,explain:"Consistency（一貫性）はトランザクション前後で整合性が保たれる性質。",contrast:"Isolationは同時実行時の相互干渉を防ぐ性質。"},
+{id:62,cat:"PM",prompt:"EVM：EV ÷ PV",options:["SPI","CPI","SV","CV"],answer:0,explain:"SPIはEVをPVで割ったスケジュール効率指数。",contrast:"CPIはEV÷AC。"},
+{id:63,cat:"開発",prompt:"スクラム：毎日短時間で進捗と今後の作業を調整",options:["デイリースクラム","スプリントレビュー","レトロスペクティブ","スプリントプランニング"],answer:0,explain:"デイリースクラムは開発者がスプリントゴールに向けた進捗を毎日確認・調整するイベント。",contrast:"レビューは成果物、レトロスペクティブは進め方を検査する。"},
+{id:64,cat:"クラウド",prompt:"仮想マシン・ストレージ・ネットワークをサービスとして利用",options:["IaaS","PaaS","SaaS","DaaS"],answer:0,explain:"IaaSは仮想サーバなどのITインフラをサービスとして提供する。",contrast:"PaaSはアプリ実行基盤、SaaSは完成済みアプリ。"},
+{id:65,cat:"ストラテジ",prompt:"SWOT：自社に有利な外部環境",options:["Opportunity","Strength","Weakness","Threat"],answer:0,explain:"Opportunity（機会）は自社に有利な外部環境。",contrast:"StrengthとWeaknessは内部環境、Threatは不利な外部環境。"},
+{id:66,cat:"システム",prompt:"MTBF=900、MTTR=100の稼働率",options:["0.9","0.1","1.0","9.0"],answer:0,explain:"稼働率=900÷(900+100)=0.9。",contrast:"分母はMTBFとMTTRの合計。"}
 ];
