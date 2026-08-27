@@ -79,7 +79,24 @@
       return {...t,direction:"normal",displayPrompt:t.prompt,displayOptions:order.map(i=>t.options[i]),displayAnswer:order.indexOf(t.answer)};
     }
     const correct=t.options[t.answer];
-    const distractors=shuffledIndexes(terms.length).map(i=>terms[i]).filter(x=>x.id!==t.id).slice(0,3).map(x=>x.prompt);
+    const related={
+      "ネットワーク":["ネットワーク","セキュリティ","システム","クラウド"],
+      "セキュリティ":["セキュリティ","ネットワーク","OS","法務"],
+      "DB":["DB","システム","開発"],
+      "OS":["OS","ハードウェア","システム"],
+      "ハードウェア":["ハードウェア","OS","システム"],
+      "システム":["システム","クラウド","ネットワーク","ハードウェア"],
+      "クラウド":["クラウド","システム","ネットワーク"],
+      "PM":["PM","開発","ストラテジ"],
+      "開発":["開発","PM","システム"],
+      "ストラテジ":["ストラテジ","PM","法務"],
+      "法務":["法務","ストラテジ","セキュリティ"],
+      "AI":["AI","システム","クラウド"]
+    };
+    const cats=related[t.cat]||[t.cat];
+    const candidates=[];
+    cats.forEach(cat=>shuffledIndexes(terms.length).map(i=>terms[i]).filter(x=>x.id!==t.id&&x.cat===cat).forEach(x=>{if(!candidates.some(y=>y.id===x.id))candidates.push(x);}));
+    const distractors=candidates.slice(0,3).map(x=>x.prompt);
     const prompts=[t.prompt,...distractors];
     const order=shuffledIndexes(prompts.length);
     return {...t,direction:"reverse",displayPrompt:correct,displayOptions:order.map(i=>prompts[i]),displayAnswer:order.indexOf(0)};
