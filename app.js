@@ -1,6 +1,7 @@
 (() => {
   const questions = window.FE_QUESTIONS || [];
   const terms = window.FE_TERMS || [];
+  const priorityTerms = window.FE_PRIORITY_TERMS || [];
   const QUIZ_ROUND = window.FE_ROUND || 4;
   const QUIZ_KEY = `fe-quiz-mobile-round-${QUIZ_ROUND}`;
   const DRILL_KEY = "fe-term-drill-v1";
@@ -101,7 +102,7 @@
     const order=shuffledIndexes(prompts.length);
     return {...t,direction:"reverse",displayPrompt:correct,displayOptions:order.map(i=>prompts[i]),displayAnswer:order.indexOf(0)};
   }
-  function buildSession(source){ let selected; if(source&&source.length){selected=source.slice();} else{ const now=Date.now();const scored=terms.map(t=>{const s=drillState.items[t.id]||{level:0,due:0,attempts:0,correct:0,last:0};const isDue=(s.due||0)<=now;const accuracy=s.attempts?s.correct/s.attempts:0;return {t,score:(isDue?10000:0)+(1-accuracy)*1000+(3-(s.level||0))*100-(s.last||0)/1e12};}); scored.sort((a,b)=>b.score-a.score);selected=scored.slice(0,Math.min(SESSION_SIZE,scored.length)).map(x=>x.t); } return selected.map(prepareTerm); }
+  function buildSession(source){ let selected; if(source&&source.length){selected=source.slice();} else{ const now=Date.now();const scored=terms.map(t=>{const s=drillState.items[t.id]||{level:0,due:0,attempts:0,correct:0,last:0};const isDue=(s.due||0)<=now;const priority=priorityTerms.includes(t.id)&&s.attempts<3?20000:0;const accuracy=s.attempts?s.correct/s.attempts:0;return {t,score:priority+(isDue?10000:0)+(1-accuracy)*1000+(3-(s.level||0))*100-(s.last||0)/1e12};}); scored.sort((a,b)=>b.score-a.score);selected=scored.slice(0,Math.min(SESSION_SIZE,scored.length)).map(x=>x.t); } return selected.map(prepareTerm); }
   function startDrill(source){drillSession=buildSession(source);drillIndex=0;drillCorrect=0;drillWrong=[];drillAnswered=false;showView("drillView");setTitle("科目A　双方向3秒特訓");renderDrill();}
   function startTimer(){clearInterval(timerId);timerValue=3;el("drillTimer").textContent="3";el("drillTimer").classList.remove("expired");timerId=setInterval(()=>{if(drillAnswered){clearInterval(timerId);return;}timerValue--;if(timerValue>0)el("drillTimer").textContent=String(timerValue);else{el("drillTimer").textContent="!";el("drillTimer").classList.add("expired");clearInterval(timerId);}},1000);}
   function renderDrill(){ if(!drillSession.length){finishDrill();return;}const q=drillSession[drillIndex];drillAnswered=false; el("drillCounter").textContent=`問題 ${drillIndex+1} / ${drillSession.length}`;el("drillScore").textContent=`正解 ${drillCorrect}`;el("drillProgressBar").style.width=`${((drillIndex+1)/drillSession.length)*100}%`;el("drillCategory").textContent=q.cat;el("drillDirection").textContent=q.direction==="reverse"?"逆転：用語から説明を3秒で連想":"通常：説明から用語を3秒で連想";el("drillPrompt").textContent=q.displayPrompt;el("drillFeedback").hidden=true;el("drillNextBtn").hidden=true; const box=el("drillOptions");box.innerHTML="";q.displayOptions.forEach((text,idx)=>{const btn=document.createElement("button");btn.type="button";btn.className="option-btn";btn.innerHTML=`<span class="choice-letter">${String.fromCharCode(65+idx)}</span><span>${escapeHtml(text)}</span>`;btn.addEventListener("click",()=>answerDrill(idx));box.appendChild(btn);});startTimer(); }
