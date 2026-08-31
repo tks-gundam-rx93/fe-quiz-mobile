@@ -64,5 +64,13 @@ window.FE_TERMS = [
 {id:63,cat:"開発",prompt:"スクラム：毎日短時間で進捗と今後の作業を調整",options:["デイリースクラム","スプリントレビュー","レトロスペクティブ","スプリントプランニング"],answer:0,explain:"デイリースクラムは開発者がスプリントゴールに向けた進捗を毎日確認・調整するイベント。",contrast:"レビューは成果物、レトロスペクティブは進め方を検査する。"},
 {id:64,cat:"クラウド",prompt:"仮想マシン・ストレージ・ネットワークをサービスとして利用",options:["IaaS","PaaS","SaaS","DaaS"],answer:0,explain:"IaaSは仮想サーバなどのITインフラをサービスとして提供する。",contrast:"PaaSはアプリ実行基盤、SaaSは完成済みアプリ。"},
 {id:65,cat:"ストラテジ",prompt:"SWOT：自社に有利な外部環境",options:["Opportunity","Strength","Weakness","Threat"],answer:0,explain:"Opportunity（機会）は自社に有利な外部環境。",contrast:"StrengthとWeaknessは内部環境、Threatは不利な外部環境。"},
-{id:66,cat:"システム",prompt:"MTBF=900、MTTR=100の稼働率",options:["0.9","0.1","1.0","9.0"],answer:0,explain:"稼働率=900÷(900+100)=0.9。",contrast:"分母はMTBFとMTTRの合計。"}
+{id:66,cat:"システム",prompt:"MTBF=900、MTTR=100の稼働率",options:["0.9","0.1","1.0","9.0"],answer:0,explain:"稼働率=900÷(900+100)=0.9。",contrast:"分母はMTBFとMTTRの合計。"},
+{id:67,cat:"ネットワーク",prompt:"プライベートIPとグローバルIPを原則1対1で変換",options:["NAT","NAPT","ARP","DHCP"],answer:0,explain:"NATはプライベートIPアドレスとグローバルIPアドレスを変換する。",contrast:"NAPTはIPアドレスに加えてポート番号も変換し、1個のグローバルIPを複数端末で共有する。"},
+{id:68,cat:"セキュリティ",prompt:"デジタル署名の検証に使用する鍵",options:["署名者の公開鍵","署名者の秘密鍵","受信者の公開鍵","受信者の秘密鍵"],answer:0,explain:"署名者の秘密鍵で作成されたデジタル署名は、署名者の公開鍵で検証する。",contrast:"機密性を目的とした暗号化では受信者の公開鍵を使う。"},
+{id:69,cat:"DB",prompt:"GROUP BYによる集計前の行を絞り込む句",options:["WHERE","HAVING","ORDER BY","DISTINCT"],answer:0,explain:"WHEREはグループ化や集計を行う前の行を条件で絞り込む。",contrast:"HAVINGは集計後のグループに条件を指定する。"},
+{id:70,cat:"PM",prompt:"EVM：EV ÷ AC",options:["CPI","SPI","CV","SV"],answer:0,explain:"CPIはEVをACで割ったコスト効率指数。",contrast:"SPIはEV÷PV。"},
+{id:71,cat:"開発",prompt:"スクラム：仕事の進め方を振り返って改善",options:["スプリントレトロスペクティブ","スプリントレビュー","デイリースクラム","スプリントプランニング"],answer:0,explain:"スプリントレトロスペクティブでは、チームが仕事の進め方を検査して改善策を決める。",contrast:"スプリントレビューでは成果物と今後の方向性を確認する。"},
+{id:72,cat:"ハードウェア",prompt:"RAID0：複数ディスクへデータを分散し高速化",options:["ストライピング","ミラーリング","パリティ分散","二重化"],answer:0,explain:"RAID0はデータを複数ディスクへ分散するストライピングで高速化するが、冗長性はない。",contrast:"RAID1はミラーリングで冗長性を確保する。"},
+{id:73,cat:"ストラテジ",prompt:"SWOT：自社に不利な外部環境",options:["Threat","Opportunity","Weakness","Strength"],answer:0,explain:"Threat（脅威）は競合参入など、自社に不利な外部環境。",contrast:"Weaknessは自社内部の弱み。"},
+{id:74,cat:"DB",prompt:"検索を高速化するが更新負荷と記憶領域が増える",options:["インデックス","正規化","ビュー","排他制御"],answer:0,explain:"インデックスは検索を高速化する一方、更新時の保守負荷と記憶領域が必要になる。",contrast:"正規化は重複や更新時異常を減らすための表設計。"}
 ];
