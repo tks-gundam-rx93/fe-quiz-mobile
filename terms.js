@@ -1,4 +1,4 @@
-window.FE_PRIORITY_TERMS = [27, 68, 69, 70, 71, 73];
+window.FE_PRIORITY_TERMS = [27, 49, 50, 64, 65, 68, 69, 73, 75];
 window.FE_TERMS = [
 {id:1,cat:"ネットワーク",prompt:"IPアドレス → MACアドレス",options:["ARP","DNS","DHCP","NTP"],answer:0,explain:"ARPは、同一ネットワーク上でIPアドレスからMACアドレスを求める。",contrast:"DNSはドメイン名→IP、DHCPはIP設定の自動割当。"},
 {id:2,cat:"ネットワーク",prompt:"ドメイン名 → IPアドレス",options:["ARP","DNS","SMTP","SNMP"],answer:1,explain:"DNSはドメイン名をIPアドレスへ名前解決する。",contrast:"ARPはIP→MAC。"},
@@ -79,5 +79,9 @@ window.FE_TERMS = [
 {id:77,cat:"システム",prompt:"稼働率0.9と0.8の装置を直列接続した稼働率",options:["0.72","0.98","0.85","1.7"],answer:0,explain:"直列システムは全装置が動く必要があるため、0.9×0.8=0.72。",contrast:"並列システムは1から全装置の故障確率を引く。"},
 {id:78,cat:"ストラテジ",prompt:"PPM：高成長率 × 低市場占有率",options:["問題児（Question Mark）","花形（Star）","金のなる木","負け犬"],answer:0,explain:"高成長率・低市場占有率の事業は問題児。追加投資によって花形を目指す。",contrast:"高成長率・高市場占有率は花形。"},
 {id:79,cat:"OS",prompt:"フルバックアップ後の全変更データを毎回保存",options:["差分バックアップ","増分バックアップ","フルバックアップ","ミラーリング"],answer:0,explain:"差分バックアップは、直前のフルバックアップ以降に変更された全データを保存する。",contrast:"増分バックアップは直前のバックアップ以降の変更分だけを保存する。"},
-{id:80,cat:"セキュリティ",prompt:"指紋・顔・静脈を使う認証要素",options:["生体情報","知識情報","所持情報","位置情報"],answer:0,explain:"指紋や顔など本人の身体的特徴は生体情報による認証。",contrast:"パスワードは知識情報、ICカードは所持情報。"}
+{id:80,cat:"セキュリティ",prompt:"指紋・顔・静脈を使う認証要素",options:["生体情報","知識情報","所持情報","位置情報"],answer:0,explain:"指紋や顔など本人の身体的特徴は生体情報による認証。",contrast:"パスワードは知識情報、ICカードは所持情報。"},
+{id:81,cat:"セキュリティ",prompt:"ハッシュ値の比較で改ざんの有無を確認",options:["完全性","機密性","可用性","否認防止"],answer:0,explain:"ハッシュ値の比較により、データが途中で変更されていないかを確認できる。",contrast:"暗号化の主目的は機密性。"},
+{id:82,cat:"PM",prompt:"EVM：EV − AC",options:["CV","SV","CPI","SPI"],answer:0,explain:"CVはEVからACを引いたコスト差異。負の値ならコスト超過。",contrast:"SVはEV−PV。"},
+{id:83,cat:"OS",prompt:"前回のバックアップ以降の変更分だけを保存",options:["増分バックアップ","差分バックアップ","フルバックアップ","ミラーリング"],answer:0,explain:"増分バックアップは直前に実施したバックアップ以降の変更分だけを保存する。",contrast:"差分バックアップは直前のフルバックアップ以降の全変更分を保存する。"},
+{id:84,cat:"ストラテジ",prompt:"PPM：低成長率 × 高市場占有率",options:["金のなる木（Cash Cow）","花形（Star）","問題児","負け犬"],answer:0,explain:"低成長率・高市場占有率の事業は金のなる木で、安定した資金を生み出す。",contrast:"高成長率・高市場占有率は花形。"}
 ];
