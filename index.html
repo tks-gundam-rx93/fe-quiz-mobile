@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FE合格作戦">
-  <title>FE 9/6 合格作戦 - 第10回</title>
+  <title>FE 9/6 合格作戦 - 最終模試</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -25,13 +25,18 @@
         <div class="mode-grid">
           <button id="startQuizBtn" class="mode-card" type="button">
             <span class="mode-kicker">本番対策</span>
-            <strong>予測問題　第10回</strong>
-            <span>20問・一括回答・提出用テキスト生成</span>
+            <strong>最終模試　第11回</strong>
+            <span>本番形式：科目A 60問／科目B 20問・タイマー付き</span>
           </button>
           <button id="startDrillBtn" class="mode-card accent-card" type="button">
             <span class="mode-kicker">科目A 暗記</span>
             <strong>3秒特訓</strong>
             <span>20問・通常／逆転・即時判定・間隔反復</span>
+          </button>
+          <button id="startCramBtn" class="mode-card cram-mode-card" type="button">
+            <span class="mode-kicker">試験前10分</span>
+            <strong>本番直前チェック</strong>
+            <span>重点8テーマ・答えを隠して確認・不安だけ再チェック</span>
           </button>
         </div>
         <div class="stats-card">
@@ -43,6 +48,11 @@
       </section>
 
       <section id="quizView" hidden>
+        <div class="exam-section-bar">
+          <button id="sectionABtn" class="section-btn active" type="button">科目A<br><small>60問・90分</small></button>
+          <button id="sectionBBtn" class="section-btn" type="button">科目B<br><small>20問・100分</small></button>
+          <div class="exam-timer"><small>残り時間</small><strong id="examTimer">--:--</strong></div>
+        </div>
         <div class="progress-row"><span id="counter"></span><span id="answeredCount"></span></div>
         <div class="progress"><div id="progressBar"></div></div>
         <article class="question-card">
@@ -85,8 +95,33 @@
         <button id="drillHomeBtn" class="secondary full" type="button">学習メニューへ</button>
       </section>
 
+      <section id="cramView" hidden>
+        <div class="progress-row"><span id="cramCounter"></span><span id="cramStatus"></span></div>
+        <div class="progress cram-progress"><div id="cramProgressBar"></div></div>
+        <article class="question-card cram-card">
+          <div class="meta"><span class="badge">本番直前</span><span id="cramCategory" class="badge soft"></span></div>
+          <p class="cram-instruction">用語の違いと見分け方を、頭の中で説明してください。</p>
+          <h2 id="cramTitle" class="cram-title"></h2>
+          <button id="revealCramBtn" class="primary full" type="button">答えを見る</button>
+          <div id="cramAnswer" class="cram-answer" hidden></div>
+          <div id="cramJudge" class="cram-judge" hidden>
+            <button id="cramUnsureBtn" class="secondary" type="button">△ 不安</button>
+            <button id="cramKnownBtn" class="primary" type="button">○ 覚えた</button>
+          </div>
+        </article>
+        <button id="endCramBtn" class="secondary full" type="button">直前チェックを終了</button>
+      </section>
+
+      <section id="cramResultView" class="result-view cram-result" hidden>
+        <h2>本番直前チェック完了</h2>
+        <div id="cramResultSummary" class="result-summary"></div>
+        <div class="exam-tips"><strong>本番で迷ったとき</strong><p>① 問題文の目的語を確認　② 計算式を書き出す　③ 明らかに違う選択肢から消す</p></div>
+        <button id="retryCramBtn" class="primary full" type="button">不安な項目だけ再確認</button>
+        <button id="cramHomeBtn" class="secondary full" type="button">学習メニューへ</button>
+      </section>
+
       <section id="resultView" class="result-view" hidden>
-        <h2>第10回 提出用回答</h2>
+        <h2>最終模試 第11回 提出用回答</h2>
         <p>下のテキストをコピーしてChatGPTへ貼り付けてください。正解はこのアプリには入っていません。</p>
         <textarea id="resultText" readonly></textarea>
         <button id="copyBtn" class="primary full" type="button">回答をコピー</button>
@@ -94,7 +129,7 @@
       </section>
 
       <section id="overviewView" class="overview-view" hidden>
-        <div class="overview-head"><h2>第10回 問題一覧</h2><button id="closeOverviewBtn" class="icon-btn" type="button">✕</button></div>
+        <div class="overview-head"><h2>最終模試 第11回 問題一覧</h2><button id="closeOverviewBtn" class="icon-btn" type="button">✕</button></div>
         <div id="overviewGrid" class="overview-grid"></div>
       </section>
       <section id="statsView" class="stats-view" hidden>
@@ -126,8 +161,8 @@
       <button id="tabStats" class="tab-btn" type="button"><span>▥</span><small>学習状況</small></button>
     </nav>
   </div>
-  <script src="./questions.js"></script>
   <script src="./terms.js"></script>
+  <script src="./questions.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
