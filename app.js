@@ -4,10 +4,11 @@
   const priorityTerms = window.FE_PRIORITY_TERMS || [];
   const comparisons = window.FE_COMPARISONS || [];
   const QUIZ_ROUND = window.FE_ROUND || 4;
-  const QUIZ_KEY = `fe-quiz-mobile-round-${QUIZ_ROUND}`;
+  const QUIZ_KEY = `fe-quiz-mobile-round-${QUIZ_ROUND}-final-v2`;
   const DRILL_KEY = "fe-term-drill-v1";
   const SESSION_SIZE = 20;
   const EXAM_MINUTES={A:90,B:100};
+  const EXAM_CHOICES=["ア","イ","ウ","エ"];
   const el = id => document.getElementById(id);
 
   const views = ["homeView","quizView","drillView","drillResultView","cramView","cramResultView","resultView","overviewView","statsView"];
@@ -64,14 +65,15 @@
     el("sectionABtn").classList.toggle("active",activeSection==="A");el("sectionBBtn").classList.toggle("active",activeSection==="B");startExamTimer();
     el("sectionBadge").textContent=`科目${q.section}`; el("categoryBadge").textContent=q.category; el("importanceBadge").textContent=`重要度 ${q.importance}`;
     el("questionText").textContent=`問${q.displayNo||q.id}　${q.question}`;
+    const figure=el("figureBlock");if(q.figure){figure.hidden=false;figure.innerHTML=q.figure;}else{figure.hidden=true;figure.innerHTML="";}
     const code=el("codeBlock"); if(q.code){code.hidden=false;code.textContent=q.code;}else{code.hidden=true;code.textContent="";}
     const options=el("options"); options.innerHTML="";
-    q.options.forEach((text,idx)=>{ const btn=document.createElement("button"); btn.type="button"; btn.className="option-btn"+(quizState.answers[q.id]===idx?" selected":""); btn.innerHTML=`<span class="choice-letter">${String.fromCharCode(65+idx)}</span><span>${escapeHtml(text)}</span>`; btn.addEventListener("click",()=>{quizState.answers[q.id]=idx;saveQuizState();renderQuiz();}); options.appendChild(btn); });
+    q.options.forEach((text,idx)=>{ const btn=document.createElement("button"); btn.type="button"; btn.className="option-btn"+(quizState.answers[q.id]===idx?" selected":""); btn.innerHTML=`<span class="choice-letter">${EXAM_CHOICES[idx]}</span><span>${escapeHtml(text)}</span>`; btn.addEventListener("click",()=>{quizState.answers[q.id]=idx;saveQuizState();renderQuiz();}); options.appendChild(btn); });
     el("reviewFlag").checked=!!quizState.review[q.id];el("prevBtn").disabled=localIndex===0;el("nextBtn").textContent=localIndex===indexes.length-1?(activeSection==="A"?"科目Bへ →":"先頭へ ↺"):"次へ →";saveQuizState();
   }
   function goQuiz(delta){const indexes=sectionIndexes(activeSection);const localIndex=indexes.indexOf(current);if(delta>0&&localIndex===indexes.length-1){if(activeSection==="A")switchSection("B");else{current=indexes[0];renderQuiz();}}else{current=indexes[Math.max(0,Math.min(indexes.length-1,localIndex+delta))];renderQuiz();}window.scrollTo({top:0,behavior:"smooth"});}
   function showOverview(){ showView("overviewView");setTitle(`予測問題　第${QUIZ_ROUND}回`);const grid=el("overviewGrid");grid.innerHTML=""; questions.forEach((q,idx)=>{const btn=document.createElement("button");btn.type="button";const classes=["overview-item"];if(quizState.answers[q.id]!==undefined)classes.push("answered");if(quizState.review[q.id])classes.push("review");if(idx===current)classes.push("current");btn.className=classes.join(" ");btn.textContent=q.id;btn.addEventListener("click",()=>{current=idx;showView("quizView");renderQuiz();});grid.appendChild(btn);}); }
-  function showSubmit(){const lines=[`FE最終模試 第${QUIZ_ROUND}回 回答`];["A","B"].forEach(section=>{lines.push("",`科目${section}`);questions.filter(q=>q.section===section).forEach(q=>{const a=quizState.answers[q.id];lines.push(`問${q.displayNo||q.id}. ${a===undefined?"未回答":String.fromCharCode(65+a)}`);});const reviewIds=questions.filter(q=>q.section===section&&quizState.review[q.id]).map(q=>`問${q.displayNo||q.id}`);if(reviewIds.length)lines.push(`見直し指定: ${reviewIds.join(", ")}`);});el("resultText").value=lines.join("\n");showView("resultView");setTitle(`最終模試　第${QUIZ_ROUND}回`);window.scrollTo({top:0,behavior:"smooth"});}
+  function showSubmit(){const lines=[`FE最終模試 第${QUIZ_ROUND}回 回答`];["A","B"].forEach(section=>{lines.push("",`科目${section}`);questions.filter(q=>q.section===section).forEach(q=>{const a=quizState.answers[q.id];lines.push(`問${q.displayNo||q.id}. ${a===undefined?"未回答":EXAM_CHOICES[a]}`);});const reviewIds=questions.filter(q=>q.section===section&&quizState.review[q.id]).map(q=>`問${q.displayNo||q.id}`);if(reviewIds.length)lines.push(`見直し指定: ${reviewIds.join(", ")}`);});el("resultText").value=lines.join("\n");showView("resultView");setTitle(`最終模試　第${QUIZ_ROUND}回`);window.scrollTo({top:0,behavior:"smooth"});}
   async function copyResult(){const text=el("resultText").value;try{await navigator.clipboard.writeText(text);toast("回答をコピーしました");}catch(_){el("resultText").focus();el("resultText").select();document.execCommand("copy");toast("回答をコピーしました");}}
 
   const drillState=loadDrillState();
