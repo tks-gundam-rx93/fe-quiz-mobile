@@ -85,3 +85,61 @@ window.FE_TERMS = [
 {id:83,cat:"OS",prompt:"前回のバックアップ以降の変更分だけを保存",options:["増分バックアップ","差分バックアップ","フルバックアップ","ミラーリング"],answer:0,explain:"増分バックアップは直前に実施したバックアップ以降の変更分だけを保存する。",contrast:"差分バックアップは直前のフルバックアップ以降の全変更分を保存する。"},
 {id:84,cat:"ストラテジ",prompt:"PPM：低成長率 × 高市場占有率",options:["金のなる木（Cash Cow）","花形（Star）","問題児","負け犬"],answer:0,explain:"低成長率・高市場占有率の事業は金のなる木で、安定した資金を生み出す。",contrast:"高成長率・高市場占有率は花形。"}
 ];
+
+window.FE_COMPARISONS = [
+  {category:"セキュリティ",title:"公開鍵暗号とデジタル署名",priority:true,termIds:[53,68,75],terms:[
+    {name:"暗号化",meaning:"受信者の公開鍵で暗号化し、受信者の秘密鍵で復号する。",key:"目的：機密性（他人に読ませない）"},
+    {name:"署名の作成",meaning:"署名者の秘密鍵を使用する。",key:"本人だけが持つ鍵で作る"},
+    {name:"署名の検証",meaning:"署名者の公開鍵を使用する。",key:"誰でも入手できる鍵で確かめる"}
+  ],mnemonic:"暗号化は『受信者』、署名は『署名者』を見る。署名は秘密で作り、公開で確認。"},
+  {category:"OS",title:"増分バックアップと差分バックアップ",priority:true,termIds:[79,83],terms:[
+    {name:"増分バックアップ",meaning:"直前に行ったバックアップ以降の変更分だけを保存する。",key:"毎回の量は少ない／復元に複数世代が必要"},
+    {name:"差分バックアップ",meaning:"直前のフルバックアップ以降の全変更分を保存する。",key:"日ごとに量が増える／復元はフル＋最新差分"}
+  ],mnemonic:"増分は『前回から少しずつ増す』、差分は『フルとの差を全部』。"},
+  {category:"PM",title:"EVMのSV・CV・SPI・CPI",priority:true,termIds:[33,34,54,62,70,82],terms:[
+    {name:"SV / SPI",meaning:"スケジュール差異 EV−PV／効率指数 EV÷PV。",key:"S＝Schedule、比較相手は計画PV"},
+    {name:"CV / CPI",meaning:"コスト差異 EV−AC／効率指数 EV÷AC。",key:"C＝Cost、比較相手は実コストAC"},
+    {name:"差異と指数",meaning:"差異は引き算、指数は割り算。負または1未満なら不調。",key:"V＝Variance、I＝Index"}
+  ],mnemonic:"Sは予定PV、Cは実費AC。Vなら引く、Iなら割る。"},
+  {category:"ストラテジ",title:"PPMの4分類",priority:true,termIds:[57,78,84],terms:[
+    {name:"花形",meaning:"高成長・高占有。投資も必要だが将来性が高い。",key:"右上：成長も占有も高い"},
+    {name:"金のなる木",meaning:"低成長・高占有。安定した資金を生む。",key:"高占有なので稼げる"},
+    {name:"問題児／負け犬",meaning:"問題児は高成長・低占有、負け犬は低成長・低占有。",key:"問題児は投資判断、負け犬は撤退検討"}
+  ],mnemonic:"占有率が高ければ『花形か金のなる木』。成長率が低い方が金のなる木。"},
+  {category:"法務",title:"特許権・著作権・商標権・意匠権",priority:true,termIds:[44,45,46],terms:[
+    {name:"特許権",meaning:"技術的な発明を保護する。出願・審査・登録が必要。",key:"技術・発明"},
+    {name:"著作権",meaning:"文章・音楽・プログラムなどの表現を保護し、創作時に発生する。",key:"表現・自動発生"},
+    {name:"商標権／意匠権",meaning:"商標権は名称やロゴ、意匠権は物品などのデザインを保護する。",key:"目印＝商標、見た目＝意匠"}
+  ],mnemonic:"特許は技術、著作は作品、商標はマーク、意匠はデザイン。"},
+  {category:"システム",title:"MTBF・MTTR・稼働率",priority:true,termIds:[38,66,77],terms:[
+    {name:"MTBF",meaning:"故障から次の故障までの平均時間。大きいほど壊れにくい。",key:"Between Failures＝故障と故障の間"},
+    {name:"MTTR",meaning:"故障してから復旧するまでの平均時間。小さいほど復旧が速い。",key:"To Repair＝修理まで"},
+    {name:"稼働率",meaning:"MTBF ÷（MTBF＋MTTR）で求める。",key:"動く時間 ÷ 全時間"}
+  ],mnemonic:"BはBetweenで故障の間、RはRepairで修理。稼働率の分子は動いているMTBF。"},
+  {category:"ネットワーク",title:"サブネットの総数と利用可能数",priority:true,termIds:[51,52],terms:[
+    {name:"総アドレス数",meaning:"2のホスト部ビット数乗。/26なら2の6乗＝64個。",key:"32−プレフィックス長＝ホスト部"},
+    {name:"利用可能ホスト数",meaning:"総アドレス数からネットワークとブロードキャストの2個を引く。",key:"/26なら64−2＝62台"}
+  ],mnemonic:"まず総数を2の乗数で出す。『利用可能』とあれば最後に−2。"},
+  {category:"セキュリティ",title:"機密性・完全性・可用性",priority:true,termIds:[8,81],terms:[
+    {name:"機密性",meaning:"許可された人だけが情報へアクセスできる。",key:"暗号化・アクセス制御"},
+    {name:"完全性",meaning:"情報が正確で、改ざんされていない。",key:"ハッシュ値・デジタル署名"},
+    {name:"可用性",meaning:"必要なときに情報やサービスを利用できる。",key:"冗長化・バックアップ"}
+  ],mnemonic:"秘密を守る＝機密、内容を守る＝完全、使える状態を守る＝可用。"},
+  {category:"DB",title:"WHERE句とHAVING句",priority:false,termIds:[69],terms:[
+    {name:"WHERE",meaning:"GROUP BYで集計する前の行を絞り込む。",key:"元データの行に条件"},
+    {name:"HAVING",meaning:"GROUP BYで集計した後のグループを絞り込む。",key:"COUNTやSUMなどの集計結果に条件"}
+  ],mnemonic:"WHEREは材料を選び、HAVINGは集計結果を選ぶ。"},
+  {category:"クラウド",title:"IaaS・PaaS・SaaS",priority:false,termIds:[49,50,64],terms:[
+    {name:"IaaS",meaning:"仮想サーバ・ストレージ・ネットワークなどのインフラを利用する。",key:"利用者がOS以上を管理"},
+    {name:"PaaS",meaning:"OSやミドルウェアを含むアプリ実行・開発基盤を利用する。",key:"利用者はアプリ開発に集中"},
+    {name:"SaaS",meaning:"完成済みのアプリケーションをそのまま利用する。",key:"メールや業務アプリを利用"}
+  ],mnemonic:"IはInfrastructure、PはPlatform、SはSoftware。下から順に提供範囲が広がる。"},
+  {category:"ストラテジ",title:"SWOTの内部・外部要因",priority:false,termIds:[35,65,73],terms:[
+    {name:"Strength / Weakness",meaning:"自社で制御しやすい内部環境の強み・弱み。",key:"S・W＝内部"},
+    {name:"Opportunity / Threat",meaning:"市場や競合など外部環境の機会・脅威。",key:"O・T＝外部"}
+  ],mnemonic:"会社の中を見るSW、外を見るOT。良い方がS・O、悪い方がW・T。"},
+  {category:"DB",title:"主キーと外部キー",priority:false,termIds:[25,26],terms:[
+    {name:"主キー",meaning:"表の各行を一意に識別する列。重複とNULLは不可。",key:"自分の表の行を特定"},
+    {name:"外部キー",meaning:"別の表の主キーなどを参照し、表同士を関連付ける列。",key:"別表を参照して整合性を保つ"}
+  ],mnemonic:"主キーは自分の身分証、外部キーは相手表への住所。"}
+];
