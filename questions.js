@@ -1,23 +1,34 @@
-window.FE_ROUND = 10;
-window.FE_QUESTIONS = [
-{id:1,section:"A",category:"セキュリティ",importance:"S",question:"Aさんが作成したデジタル署名を受信者が検証するとき、通常使用する鍵はどれか。",options:["Aさんの公開鍵","Aさんの秘密鍵","受信者の公開鍵","受信者の秘密鍵"]},
-{id:2,section:"A",category:"データベース",importance:"S",question:"SQLでGROUP BYによる集計を行う前に、在籍中の社員だけを対象として行を絞り込む句はどれか。",options:["GROUP BY","HAVING","WHERE","ORDER BY"]},
-{id:3,section:"A",category:"ストラテジ",importance:"S",question:"SWOT分析において、自社設備の老朽化や技術者不足など、自社にとって不利な内部環境はどれに分類されるか。",options:["Strength","Weakness","Opportunity","Threat"]},
-{id:4,section:"A",category:"クラウド",importance:"S",question:"利用者がOSやミドルウェアを管理せず、アプリケーションの開発・実行基盤を利用するクラウドの提供形態はどれか。",options:["SaaS","IaaS","PaaS","DaaS"]},
-{id:5,section:"A",category:"ネットワーク",importance:"A",question:"IPv4でプレフィックス長が /26 のサブネットに含まれるIPアドレス総数はいくつか。",options:["30","32","62","64"]},
-{id:6,section:"A",category:"データベース",importance:"A",question:"関係データベースで、別の表の主キーを参照して表同士の関係を表すキーはどれか。",options:["候補キー","外部キー","複合キー","代替キー"]},
-{id:7,section:"A",category:"システム構成",importance:"S",question:"MTBFが720時間、MTTRが80時間のシステムの稼働率はいくつか。",options:["0.9","0.8","0.1","9.0"]},
-{id:8,section:"A",category:"プロジェクトマネジメント",importance:"S",question:"EVMで EV=100、AC=120 のとき、CV（コスト差異）はいくつか。",options:["20","0.83","-20","1.2"]},
-{id:9,section:"A",category:"セキュリティ",importance:"A",question:"受信したファイルのハッシュ値を送信前のハッシュ値と比較することで、主に確認できる情報セキュリティの特性はどれか。",options:["機密性","可用性","真正性","完全性"]},
-{id:10,section:"A",category:"ストラテジ",importance:"A",question:"PPMにおいて、市場成長率は低いが相対的市場占有率が高く、安定した資金を生み出す事業はどれか。",options:["花形（Star）","金のなる木（Cash Cow）","問題児（Question Mark）","負け犬（Dog）"]},
-{id:11,section:"A",category:"法務",importance:"A",question:"自然法則を利用した技術的な発明を保護する権利はどれか。",options:["特許権","著作権","商標権","意匠権"]},
-{id:12,section:"A",category:"システム運用",importance:"A",question:"前回実施したバックアップ以降に変更されたデータだけを保存する方式はどれか。",options:["フルバックアップ","差分バックアップ","増分バックアップ","ミラーリング"]},
-{id:13,section:"B",category:"キュー・スタック",importance:"S",question:"次の処理を実行したとき、resultの値はいくつか。キューは先入れ先出し、スタックは後入れ先出しとする。",code:"ENQUEUE(3)\nENQUEUE(5)\nPUSH(4)\na ← DEQUEUE()\nPUSH(a)\nb ← POP()\nc ← DEQUEUE()\nresult ← b * c",options:["8","12","15","20"]},
-{id:14,section:"B",category:"二重ループ",importance:"S",question:"次の処理を実行したとき、countの値はいくつか。",code:"count ← 0\nfor i ← 1 to 4\n    for j ← 1 to 4\n        if i < j then\n            count ← count + 1\n        endif\n    endfor\nendfor",options:["4","6","8","10"]},
-{id:15,section:"B",category:"整列",importance:"S",question:"配列Aに挿入ソートを適用し、i=2とi=3の挿入処理まで終了した。配列Aはどれか。添字は1から始まる。",code:"A ← [6, 2, 5, 3]",options:["[2,6,5,3]","[2,3,5,6]","[5,2,6,3]","[2,5,6,3]"]},
-{id:16,section:"B",category:"探索",importance:"S",question:"昇順配列 [3, 7, 12, 18, 24, 29, 35, 41, 50] から二分探索で41を探す。比較される値の順序はどれか。",options:["24 → 29 → 41","24 → 35 → 41","24 → 41","24 → 35 → 50 → 41"]},
-{id:17,section:"B",category:"再帰",importance:"S",question:"次の関数fを実行したとき、f(4)の戻り値はいくつか。",code:"function f(n)\n    if n = 0 then\n        return 1\n    else\n        return n * f(n - 1)\n    endif\nendfunction",options:["24","16","12","8"]},
-{id:18,section:"B",category:"配列",importance:"S",question:"次の処理を実行した後の配列Aはどれか。添字は1から始まる。",code:"A ← [2, 4, 6, 8, 10, 12]\nfor i ← 1 to 3\n    temp ← A[i]\n    A[i] ← A[7 - i]\n    A[7 - i] ← temp\nendfor",options:["[12,4,6,8,10,2]","[10,12,8,6,2,4]","[12,10,6,8,4,2]","[12,10,8,6,4,2]"]},
-{id:19,section:"B",category:"条件分岐・ループ",importance:"S",question:"次の処理を実行したとき、xの値はいくつか。",code:"x ← 1\nfor i ← 1 to 5\n    if i MOD 3 = 0 then\n        x ← x * 3\n    else\n        x ← x + i\n    endif\nendfor",options:["18","21","24","27"]},
-{id:20,section:"B",category:"関数・疑似言語",importance:"S",question:"次の関数gを実行したとき、g(473)の戻り値はいくつか。DIVは整数除算、MODは剰余を表す。",code:"function g(n)\n    result ← 0\n    while n > 0\n        result ← result + (n MOD 10)\n        n ← n DIV 10\n    endwhile\n    return result\nendfunction",options:["10","12","14","16"]}
-];
+window.FE_ROUND = 11;
+
+(() => {
+  const selectedTermIds = [1,2,3,4,6,7,8,51,52,59,9,10,11,12,13,14,15,16,17,53,68,75,81,18,19,20,21,79,83,22,23,58,72,24,25,26,27,56,69,38,66,29,30,33,34,54,63,71,35,36,37,44,45,46,47,48,49,50,64,84];
+  const label={ネットワーク:"ネットワーク",セキュリティ:"情報セキュリティ",OS:"OS・システム運用",ハードウェア:"ハードウェア",DB:"データベース",システム:"システム構成",PM:"プロジェクトマネジメント",開発:"システム開発",ストラテジ:"経営戦略",法務:"法務",AI:"AI",クラウド:"クラウド"};
+  const terms=window.FE_TERMS||[];
+  const aQuestions=selectedTermIds.map((termId,index)=>{
+    const t=terms.find(x=>x.id===termId);const shift=(index*3+1)%4;
+    return {id:index+1,displayNo:index+1,section:"A",category:label[t.cat]||t.cat,importance:index<20?"S":"A",question:`${t.prompt}。これに該当するものとして、最も適切なものはどれか。`,options:t.options.map((_,i)=>t.options[(i+shift)%4]),correct:(4-shift)%4};
+  });
+  const bQuestions = [
+    {displayNo:1,category:"配列・ループ",question:"次の処理を実行したとき、resultの値はどれか。",code:"A ← [3, 1, 4, 1, 5]\nresult ← 0\nfor i ← 1 to 5\n    if A[i] MOD 2 = 1 then\n        result ← result + A[i]\n    endif\nendfor",options:["8","9","10","14"],correct:2},
+    {displayNo:2,category:"配列",question:"次の処理を実行した後の配列Aはどれか。添字は1から始まる。",code:"A ← [2, 4, 6, 8, 10]\ntemp ← A[1]\nfor i ← 1 to 4\n    A[i] ← A[i + 1]\nendfor\nA[5] ← temp",options:["[10,2,4,6,8]","[4,6,8,10,2]","[2,6,8,10,4]","[4,6,8,2,10]"],correct:1},
+    {displayNo:3,category:"二分探索",question:"昇順配列から二分探索で32を探す。比較する値の順序はどれか。中央の要素番号は切り捨てで求める。",code:"A ← [4, 9, 13, 18, 24, 27, 32, 38, 45]",options:["24 → 27 → 32","24 → 38 → 32","24 → 32","24 → 38 → 27 → 32"],correct:2},
+    {displayNo:4,category:"キュー・スタック",question:"キューはFIFO、スタックはLIFOとする。resultの値はどれか。",code:"ENQUEUE(2)\nENQUEUE(7)\nPUSH(5)\nx ← DEQUEUE()\nPUSH(x)\ny ← POP()\nz ← DEQUEUE()\nresult ← y + z",options:["7","9","12","14"],correct:1},
+    {displayNo:5,category:"再帰",question:"次の関数f(5)の戻り値はどれか。",code:"function f(n)\n    if n ≤ 1 then\n        return 1\n    endif\n    return n + f(n - 2)\nendfunction",options:["6","8","9","12"],correct:2},
+    {displayNo:6,category:"整列",question:"配列Aに挿入ソートを適用し、先頭から4要素までの挿入を終えたときの配列はどれか。",code:"A ← [7, 3, 5, 2, 6]",options:["[2,3,5,7,6]","[3,5,7,2,6]","[2,3,5,6,7]","[3,7,2,5,6]"],correct:0},
+    {displayNo:7,category:"文字列",question:"次の関数countRun(\"AABBBCC\")の戻り値はどれか。",code:"function countRun(s)\n    count ← 1\n    for i ← 2 to length(s)\n        if s[i] ≠ s[i - 1] then\n            count ← count + 1\n        endif\n    endfor\n    return count\nendfunction",options:["2","3","4","7"],correct:1},
+    {displayNo:8,category:"ユークリッド互除法",question:"次の関数gcd(48,18)の戻り値はどれか。",code:"function gcd(a, b)\n    while b ≠ 0\n        r ← a MOD b\n        a ← b\n        b ← r\n    endwhile\n    return a\nendfunction",options:["2","3","6","12"],correct:2},
+    {displayNo:9,category:"リスト",question:"単方向リストで、節点pの直後に新しい節点qを挿入する処理として正しいものはどれか。",options:["q.next ← p.next の後に p.next ← q","p.next ← q の後に q.next ← p.next","q.next ← p の後に p.next ← q","p ← q の後に q.next ← p.next"],correct:0},
+    {displayNo:10,category:"二次元配列",question:"次の処理を実行したとき、sumの値はどれか。",code:"A ← [[1,2,3],[4,5,6],[7,8,9]]\nsum ← 0\nfor i ← 1 to 3\n    sum ← sum + A[i,i]\nendfor",options:["12","15","18","24"],correct:1},
+    {displayNo:11,category:"整列",question:"昇順のバブルソート1回目（左から隣接要素を比較）の終了後、配列Aはどれか。",code:"A ← [5, 2, 4, 1]",options:["[2,4,1,5]","[2,5,1,4]","[1,2,4,5]","[2,4,5,1]"],correct:0},
+    {displayNo:12,category:"ビット演算",question:"次の関数ones(13)の戻り値はどれか。13の2進表現は1101である。",code:"function ones(n)\n    count ← 0\n    while n > 0\n        count ← count + (n MOD 2)\n        n ← n DIV 2\n    endwhile\n    return count\nendfunction",options:["2","3","4","6"],correct:1},
+    {displayNo:13,category:"ハッシュ",question:"表サイズ7、ハッシュ関数h(k)=k MOD 7、衝突時は次の空き位置を探す。10、17、24を順に格納したとき、24の格納位置はどれか。位置は0から始まる。",options:["3","4","5","6"],correct:2},
+    {displayNo:14,category:"木構造",question:"2分探索木に8, 3, 10, 1, 6の順で挿入した。行きがけ順（先行順）で走査した結果はどれか。",options:["1,3,6,8,10","8,3,1,6,10","1,6,3,10,8","8,10,3,6,1"],correct:1},
+    {displayNo:15,category:"基数変換",question:"次の処理後、スタックから順に取り出して並べた結果はどれか。",code:"n ← 13\nwhile n > 0\n    PUSH(n MOD 2)\n    n ← n DIV 2\nendwhile",options:["1011","1101","1110","1001"],correct:1},
+    {displayNo:16,category:"探索",question:"次の処理でtarget=4のとき、countの値はどれか。",code:"A ← [4, 2, 4, 3, 4, 1]\ncount ← 0\nfor each x in A\n    if x = target then\n        count ← count + 1\n    endif\nendfor",options:["2","3","4","6"],correct:1},
+    {displayNo:17,category:"情報セキュリティ",question:"利用者ごとに必要最小限の権限だけを付与する考え方として、最も適切なものはどれか。",options:["職務分掌","最小権限の原則","多要素認証","否認防止"],correct:1},
+    {displayNo:18,category:"情報セキュリティ",question:"WebアプリケーションへのSQLインジェクション対策として、最も適切なものはどれか。",options:["出力時にHTMLをエスケープする","パスワードを定期変更する","プレースホルダを用いたパラメータ化クエリを使う","CookieにSecure属性だけを付ける"],correct:2},
+    {displayNo:19,category:"情報セキュリティ",question:"バックアップをランサムウェア被害から守る対策として、最も適切なものはどれか。",options:["常時同じ共有フォルダへ接続する","オフライン又は変更不能な世代を保持する","バックアップを一つだけ上書きする","利用者全員に削除権限を与える"],correct:1},
+    {displayNo:20,category:"情報セキュリティ",question:"開発者と本番環境へのリリース承認者を別人にする主な目的はどれか。",options:["処理速度の向上","可用性の向上","不正や誤操作の抑止・発見","暗号鍵の長期化"],correct:2}
+  ].map((q,index)=>({id:61+index,section:"B",importance:"S",...q}));
+  window.FE_QUESTIONS=[...aQuestions,...bQuestions];
+})();
