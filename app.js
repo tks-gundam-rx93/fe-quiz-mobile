@@ -2,6 +2,7 @@
   const questions = window.FE_QUESTIONS || [];
   const terms = window.FE_TERMS || [];
   const priorityTerms = window.FE_PRIORITY_TERMS || [];
+  const comparisons = window.FE_COMPARISONS || [];
   const QUIZ_ROUND = window.FE_ROUND || 4;
   const QUIZ_KEY = `fe-quiz-mobile-round-${QUIZ_ROUND}`;
   const DRILL_KEY = "fe-term-drill-v1";
@@ -73,6 +74,36 @@
     el("drillAttempts").textContent=attempts;el("drillAccuracy").textContent=accuracy;el("drillDue").textContent=due;
     el("statsAttempts").textContent=attempts;el("statsAccuracy").textContent=accuracy;el("statsDue").textContent=due;
   }
+  let comparisonCategory="すべて";
+  function renderComparisons(){
+    const filters=el("comparisonFilters");
+    const list=el("comparisonList");
+    if(!filters||!list)return;
+    const categories=["すべて",...new Set(comparisons.map(x=>x.category))];
+    filters.innerHTML="";
+    categories.forEach(category=>{
+      const btn=document.createElement("button");
+      btn.type="button";
+      btn.className="filter-chip"+(category===comparisonCategory?" active":"");
+      btn.textContent=category;
+      btn.addEventListener("click",()=>{comparisonCategory=category;renderComparisons();});
+      filters.appendChild(btn);
+    });
+    const visible=comparisons
+      .filter(x=>comparisonCategory==="すべて"||x.category===comparisonCategory)
+      .sort((a,b)=>Number(!!b.priority)-Number(!!a.priority));
+    el("comparisonCount").textContent=`${visible.length}件`;
+    list.innerHTML="";
+    visible.forEach(item=>{
+      const card=document.createElement("details");
+      card.className="comparison-card"+(item.priority?" priority":"");
+      const rows=item.terms.map(term=>`<div class="comparison-term"><strong>${escapeHtml(term.name)}</strong><p>${escapeHtml(term.meaning)}</p><span>${escapeHtml(term.key)}</span></div>`).join("");
+      card.innerHTML=`<summary><span><small>${escapeHtml(item.category)}</small>${item.priority?'<em>重点</em>':''}<strong>${escapeHtml(item.title)}</strong></span><i>＋</i></summary><div class="comparison-body">${rows}<div class="memory-tip"><b>覚え方</b><p>${escapeHtml(item.mnemonic)}</p></div><button class="comparison-drill primary" type="button">この用語を3秒特訓</button></div>`;
+      card.querySelector("summary").addEventListener("click",()=>requestAnimationFrame(()=>{const icon=card.querySelector("summary i");icon.textContent=card.open?"−":"＋";}));
+      card.querySelector(".comparison-drill").addEventListener("click",e=>{e.preventDefault();const source=item.termIds.map(id=>terms.find(t=>t.id===id)).filter(Boolean);if(source.length)startDrill(source);else toast("特訓問題を準備中です");});
+      list.appendChild(card);
+    });
+  }
   function prepareTerm(t,index){
     const reverse=index%2===1;
     if(!reverse){
@@ -115,7 +146,7 @@
   el("tabHome").addEventListener("click",goHome);
   el("tabQuiz").addEventListener("click",()=>{showView("quizView");setTitle(`予測問題　第${QUIZ_ROUND}回`);renderQuiz();});
   el("tabDrill").addEventListener("click",()=>startDrill());
-  el("tabStats").addEventListener("click",()=>{renderHomeStats();showView("statsView");setTitle("学習状況");});
+  el("tabStats").addEventListener("click",()=>{renderHomeStats();renderComparisons();showView("statsView");setTitle("学習状況");});
 
   renderHomeStats();goHome();
 })();
