@@ -4,14 +4,14 @@
   const priorityTerms = window.FE_PRIORITY_TERMS || [];
   const comparisons = window.FE_COMPARISONS || [];
   const QUIZ_ROUND = window.FE_ROUND || 4;
-  const QUIZ_KEY = `fe-quiz-mobile-round-${QUIZ_ROUND}-official-b-v3`;
+  const QUIZ_KEY = `fe-quiz-mobile-round-${QUIZ_ROUND}-official-ab-v4`;
   const DRILL_KEY = "fe-term-drill-v1";
   const SESSION_SIZE = 20;
   const EXAM_MINUTES={A:90,B:100};
   const EXAM_CHOICES=["ア","イ","ウ","エ","オ","カ","キ","ク","ケ","コ"];
   const el = id => document.getElementById(id);
 
-  const views = ["homeView","quizView","drillView","drillResultView","cramView","cramResultView","resultView","overviewView","statsView"];
+  const views = ["homeView","quizView","drillView","drillResultView","cramView","cramResultView","resultView","overviewView","statsView","bGuideView"];
   const tabMap={homeView:"tabHome",quizView:"tabQuiz",drillView:"tabDrill",statsView:"tabStats"};
   function showView(id){
     views.forEach(v => el(v).hidden = v !== id);
@@ -56,6 +56,7 @@
   function switchSection(section){activeSection=section;const indexes=sectionIndexes(section);if(!indexes.includes(current))current=indexes[0];renderQuiz();}
   function openExam(){showView("quizView");setTitle(`最終模試　第${QUIZ_ROUND}回`);renderQuiz();}
   function openBPractice(){showView("quizView");setTitle("科目B 実戦特訓");switchSection("B");}
+  function openBGuide(){showView("bGuideView");setTitle("科目B 攻略法");}
   function renderQuiz(){
     if(!questions.length)return;
     const q=questions[current];
@@ -194,6 +195,8 @@
   el("revealCramBtn").addEventListener("click",revealCram);el("cramKnownBtn").addEventListener("click",()=>judgeCram(true));el("cramUnsureBtn").addEventListener("click",()=>judgeCram(false));el("endCramBtn").addEventListener("click",finishCram);el("retryCramBtn").addEventListener("click",()=>startCram(cramUncertain));el("cramHomeBtn").addEventListener("click",goHome);
   el("resetExamTimerBtn").addEventListener("click",resetExamTimer);
   el("startBPracticeBtn").addEventListener("click",openBPractice);
+  el("openBGuideBtn").addEventListener("click",openBGuide);
+  el("guidePracticeBtn").addEventListener("click",openBPractice);
   el("tabHome").addEventListener("click",goHome);
   el("tabQuiz").addEventListener("click",openExam);
   el("tabDrill").addEventListener("click",()=>startDrill());
