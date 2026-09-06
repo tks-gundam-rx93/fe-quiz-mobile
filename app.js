@@ -4,11 +4,11 @@
   const priorityTerms = window.FE_PRIORITY_TERMS || [];
   const comparisons = window.FE_COMPARISONS || [];
   const QUIZ_ROUND = window.FE_ROUND || 4;
-  const QUIZ_KEY = `fe-quiz-mobile-round-${QUIZ_ROUND}-final-v2`;
+  const QUIZ_KEY = `fe-quiz-mobile-round-${QUIZ_ROUND}-official-b-v3`;
   const DRILL_KEY = "fe-term-drill-v1";
   const SESSION_SIZE = 20;
   const EXAM_MINUTES={A:90,B:100};
-  const EXAM_CHOICES=["ア","イ","ウ","エ"];
+  const EXAM_CHOICES=["ア","イ","ウ","エ","オ","カ","キ","ク","ケ","コ"];
   const el = id => document.getElementById(id);
 
   const views = ["homeView","quizView","drillView","drillResultView","cramView","cramResultView","resultView","overviewView","statsView"];
@@ -55,6 +55,7 @@
   function resetExamTimer(){quizState.deadlines=quizState.deadlines||{};delete quizState.deadlines[activeSection];saveQuizState();updateExamTimer();toast(`科目${activeSection}の時間をリセットしました`);}
   function switchSection(section){activeSection=section;const indexes=sectionIndexes(section);if(!indexes.includes(current))current=indexes[0];renderQuiz();}
   function openExam(){showView("quizView");setTitle(`最終模試　第${QUIZ_ROUND}回`);renderQuiz();}
+  function openBPractice(){showView("quizView");setTitle("科目B 実戦特訓");switchSection("B");}
   function renderQuiz(){
     if(!questions.length)return;
     const q=questions[current];
@@ -192,6 +193,7 @@
   el("homeBtn").addEventListener("click",goHome);el("startQuizBtn").addEventListener("click",openExam);el("startDrillBtn").addEventListener("click",()=>startDrill());el("startCramBtn").addEventListener("click",()=>startCram());el("sectionABtn").addEventListener("click",()=>switchSection("A"));el("sectionBBtn").addEventListener("click",()=>switchSection("B")); el("prevBtn").addEventListener("click",()=>goQuiz(-1));el("nextBtn").addEventListener("click",()=>goQuiz(1)); el("overviewBtn")?.addEventListener("click",showOverview);el("closeOverviewBtn").addEventListener("click",()=>{showView("quizView");renderQuiz();}); el("submitBtn").addEventListener("click",showSubmit);el("copyBtn").addEventListener("click",copyResult);el("backBtn").addEventListener("click",()=>{showView("quizView");renderQuiz();}); el("reviewFlag").addEventListener("change",e=>{const q=questions[current];quizState.review[q.id]=e.target.checked;saveQuizState();}); el("drillNextBtn").addEventListener("click",nextDrill);el("endDrillBtn").addEventListener("click",finishDrill);el("retryWrongBtn").addEventListener("click",()=>startDrill(drillWrong));el("drillHomeBtn").addEventListener("click",goHome);
   el("revealCramBtn").addEventListener("click",revealCram);el("cramKnownBtn").addEventListener("click",()=>judgeCram(true));el("cramUnsureBtn").addEventListener("click",()=>judgeCram(false));el("endCramBtn").addEventListener("click",finishCram);el("retryCramBtn").addEventListener("click",()=>startCram(cramUncertain));el("cramHomeBtn").addEventListener("click",goHome);
   el("resetExamTimerBtn").addEventListener("click",resetExamTimer);
+  el("startBPracticeBtn").addEventListener("click",openBPractice);
   el("tabHome").addEventListener("click",goHome);
   el("tabQuiz").addEventListener("click",openExam);
   el("tabDrill").addEventListener("click",()=>startDrill());
