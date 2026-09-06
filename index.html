@@ -43,6 +43,11 @@
             <strong>科目B 実戦特訓</strong>
             <span>20問・100分・長文／複数関数／最大10択</span>
           </button>
+          <button id="openBGuideBtn" class="mode-card guide-mode-card" type="button">
+            <span class="mode-kicker">読み方・計算の型</span>
+            <strong>科目B 攻略表</strong>
+            <span>問題の型から、使う式・表・追跡方法をすぐ選ぶ</span>
+          </button>
         </div>
         <div class="stats-card">
           <h3>3秒特訓 学習状況</h3>
@@ -159,6 +164,24 @@
           <div id="comparisonFilters" class="comparison-filters" aria-label="分野で絞り込み"></div>
           <div id="comparisonList" class="comparison-list"></div>
         </div>
+      </section>
+      <section id="bGuideView" class="b-guide-view" hidden>
+        <div class="guide-hero">
+          <p class="mode-kicker">科目B 時間不足対策</p>
+          <h2>式を探す前に「型」を決める</h2>
+          <p>科目Bは万能な一つの方程式では解けません。問題を次の型に分け、対応する小さな表や式だけを使います。</p>
+        </div>
+        <div class="guide-list">
+          <article class="guide-card"><h3>複数関数・戻り値</h3><p class="guide-formula">入力 → 関数Aの戻り値 → 関数Bの戻り値</p><p>呼出し元から始めず、最初に実行される内側の関数から計算します。引数と戻り値を1行ずつ書き、変数名を混ぜないことが重要です。</p></article>
+          <article class="guide-card"><h3>繰返し・配列</h3><p class="guide-formula">回数表：i｜更新前｜代入式｜更新後</p><p>全コードを頭で追わず、値が変わる変数だけを表にします。配列は変更された要素だけを書き換えます。</p></article>
+          <article class="guide-card"><h3>再帰</h3><p class="guide-formula">f(n) = 基底条件 ／ 漸化式</p><p>まず終了条件の値を確定し、小さいnから順に表を埋めます。同じ計算を枝分かれ図で何度も追わないようにします。</p></article>
+          <article class="guide-card"><h3>探索・整列</h3><p class="guide-formula">二分探索：mid = (low＋high) div 2</p><p>比較後は探索範囲が必ず狭くなるかを確認します。昇順か降順か、添字が0始まりか1始まりかを最初に囲みます。</p></article>
+          <article class="guide-card"><h3>リスト・木</h3><p class="guide-formula">現在位置 p → next[p] → 次の位置</p><p>データ値とポインタを別の列にします。木の走査は「自分をいつ出力するか」で、行きがけ・途中・帰りがけを判定します。</p></article>
+          <article class="guide-card"><h3>ビット演算</h3><p class="guide-formula">AND＝残す／OR＝立てる／XOR＝反転</p><p>10進数へ直さず、対象ビットだけ縦に並べます。左シフトは原則×2、右シフトは原則÷2として候補を絞れます。</p></article>
+          <article class="guide-card"><h3>セキュリティ長文</h3><p class="guide-formula">資産｜脅威｜弱点｜対策｜担当者</p><p>先に設問の「誰が」「最初に」「直接」を読みます。本文では規則違反と担当範囲だけに線を引き、背景説明を全部暗記しません。</p></article>
+          <article class="guide-card"><h3>時間配分</h3><p class="guide-formula">100分 ÷ 20問 = 平均5分</p><p>3分で解法が決まらなければ見直しへ。短い問題で時間を確保し、長文・複数関数へ戻ります。最後の10分は未回答をなくします。</p></article>
+        </div>
+        <button id="guidePracticeBtn" class="primary full" type="button">攻略法を使って科目Bを解く</button>
       </section>
     </main>
     <nav class="bottom-tabs" aria-label="画面切替">
