@@ -26,7 +26,7 @@
   const $ = id => document.getElementById(id);
   let state;
   try { state = JSON.parse(localStorage.getItem(key)) || {}; } catch { state = {}; }
-  if (!Array.isArray(state.answers) || state.answers.length !== questions.length) state = {current:0, answers:Array(questions.length).fill(null), graded:false};
+  if (!Array.isArray(state.answers) || state.answers.length !== questions.length) state = {current:0, answers:Array(questions.length).fill(null)};
   state.current = Math.max(0, Math.min(questions.length - 1, Number(state.current) || 0));
   const save = () => localStorage.setItem(key, JSON.stringify(state));
   function render() {
@@ -44,33 +44,27 @@
       button.type = 'button'; button.className = 'option-btn python-choice';
       button.setAttribute('role','radio'); button.setAttribute('aria-checked', String(state.answers[n] === i));
       button.textContent = `${'ABCD'[i]}. ${option}`;
-      button.disabled = state.graded;
       button.addEventListener('click', () => { state.answers[n] = i; save(); render(); });
       $('pyOptions').append(button);
     });
     $('pyPrev').disabled = n === 0;
     $('pyNext').disabled = n === questions.length - 1;
-    const feedback = $('pyFeedback');
-    feedback.hidden = !state.graded;
-    if (state.graded) {
-      const correct = state.answers[n] === q.correct;
-      feedback.classList.toggle('wrong', !correct);
-      feedback.textContent = `${correct ? '正解' : '不正解'}　正解：${'ABCD'[q.correct]}. ${q.options[q.correct]}\n${q.explanation}`;
-    }
-    $('pyFinish').hidden = state.graded;
-    $('pyResult').hidden = !state.graded;
-    if (state.graded) $('pyResult').textContent = `採点結果：${questions.filter((item, i) => state.answers[i] === item.correct).length} / ${questions.length}問 正解。前へ・次へで各問の解説を確認できます。`;
+    $('pyFeedback').hidden = true;
   }
   $('pyPrev').addEventListener('click', () => { state.current--; save(); render(); });
   $('pyNext').addEventListener('click', () => { state.current++; save(); render(); });
   $('pyFinish').addEventListener('click', () => {
     const missing = state.answers.filter(a => !Number.isInteger(a)).length;
-    if (missing && !confirm(`未回答が${missing}問あります。採点しますか？`)) return;
-    state.graded = true; save(); render();
+    if (missing && !confirm(`未回答が${missing}問あります。回答を提出しますか？`)) return;
+    const lines=['Python 3 基礎試験 予測問題 回答','',...state.answers.map((answer,i)=>`問${i+1}. ${Number.isInteger(answer)?'ABCD'[answer]:'未回答'}`),'','上記の回答を採点し、間違えた問題の解説と弱点分野、次に重点学習すべき内容を教えてください。'];
+    $('pyResultText').value=lines.join('\n');
+    $('pyResult').hidden=false;document.body.classList.add('qualification-submitted');window.scrollTo({top:0,behavior:'smooth'});
   });
+  $('pyCopy').addEventListener('click', async () => {try{await navigator.clipboard.writeText($('pyResultText').value);$('pyCopy').textContent='コピーしました';setTimeout(()=>$('pyCopy').textContent='回答をコピー',1600);}catch(_){$('pyResultText').select();document.execCommand('copy');}});
+  $('pyBack').addEventListener('click',()=>{document.body.classList.remove('qualification-submitted');$('pyResult').hidden=true;window.scrollTo({top:0,behavior:'smooth'});});
   $('pyReset').addEventListener('click', () => {
     if (!confirm('回答と採点結果を消して最初から解き直しますか？')) return;
-    state = {current:0, answers:Array(questions.length).fill(null), graded:false}; save(); render();
+    state = {current:0, answers:Array(questions.length).fill(null)}; document.body.classList.remove('qualification-submitted');$('pyResult').hidden=true;save(); render();
   });
   render();
 })();
