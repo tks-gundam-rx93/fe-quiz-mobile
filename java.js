@@ -67,7 +67,7 @@
   $('pyFinish').addEventListener('click', () => {
     const missing = state.answers.filter(a => !Number.isInteger(a)).length;
     if (missing && !confirm(`未回答が${missing}問あります。回答を提出しますか？`)) return;
-    const lines=['Java SE Bronze 予測問題 回答','',...state.answers.map((answer,i)=>`問${i+1}. ${Number.isInteger(answer)?'ABCD'[answer]:'未回答'}`),'','上記の回答を採点し、間違えた問題の解説と弱点分野、次に重点学習すべき内容を教えてください。'];
+    const lines=['Java SE Bronze 予測問題 回答','',...state.answers.map((answer,i)=>`問${i+1}. ${Number.isInteger(answer)?'ABCD'[answer]:'未回答'}`),'','上記の回答を採点し、間違えた問題の解説と弱点分野、次に重点学習すべき内容を教えてください。同時に、今回の弱点を反映した次の予測問題を作成してください。'];
     $('pyResultText').value=lines.join('\n');
     $('pyResult').hidden=false;document.body.classList.add('qualification-submitted');window.scrollTo({top:0,behavior:'smooth'});
   });
