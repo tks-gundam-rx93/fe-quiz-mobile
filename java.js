@@ -29,10 +29,21 @@
   if (!Array.isArray(state.answers) || state.answers.length !== questions.length) state = {current:0, answers:Array(questions.length).fill(null)};
   state.current = Math.max(0, Math.min(questions.length - 1, Number(state.current) || 0));
   const save = () => localStorage.setItem(key, JSON.stringify(state));
+  const qualificationViews=['qualMenu','qualQuiz','qualStats','qualWeakness','pyResult'];
+  const qualificationTabs=['qualMenuTab','qualStatsTab','qualWeaknessTab'];
+  function showQualificationView(id,title,activeTab){
+    document.body.classList.remove('qualification-submitted');
+    qualificationViews.forEach(viewId=>$(viewId).hidden=viewId!==id);
+    qualificationTabs.forEach(tabId=>$(tabId).classList.toggle('active',tabId===activeTab));
+    $('qualTitle').textContent=title;window.scrollTo({top:0,behavior:'auto'});
+  }
   function render() {
     const q = questions[state.current], n = state.current;
     $('pyCounter').textContent = `問題 ${n + 1} / ${questions.length}`;
     $('pyAnswered').textContent = `回答済み ${state.answers.filter(a => Number.isInteger(a)).length}問`;
+    const answered=state.answers.filter(a=>Number.isInteger(a)).length;
+    $('qualAnswered').textContent=`${answered} / ${questions.length}`;
+    $('qualProgress').textContent=`${Math.round(answered/questions.length*100)}%`;
     $('pyProgress').style.width = `${(n + 1) / questions.length * 100}%`;
     $('pyCategory').textContent = q.category;
     $('pyQuestion').textContent = `問${n + 1}　${q.question}`;
@@ -62,9 +73,14 @@
   });
   $('pyCopy').addEventListener('click', async () => {try{await navigator.clipboard.writeText($('pyResultText').value);$('pyCopy').textContent='コピーしました';setTimeout(()=>$('pyCopy').textContent='回答をコピー',1600);}catch(_){$('pyResultText').select();document.execCommand('copy');}});
   $('pyBack').addEventListener('click',()=>{document.body.classList.remove('qualification-submitted');$('pyResult').hidden=true;window.scrollTo({top:0,behavior:'smooth'});});
+  $('startBronze').addEventListener('click',()=>showQualificationView('qualQuiz','Java Bronze','qualMenuTab'));
+  $('qualMenuTab').addEventListener('click',()=>showQualificationView('qualMenu','Java 問題選択','qualMenuTab'));
+  $('qualStatsTab').addEventListener('click',()=>{render();showQualificationView('qualStats','Java 学習状況','qualStatsTab');});
+  $('qualWeaknessTab').addEventListener('click',()=>showQualificationView('qualWeakness','Java 弱点克服','qualWeaknessTab'));
+  $('weaknessPractice').addEventListener('click',()=>showQualificationView('qualQuiz','Java Bronze','qualMenuTab'));
   $('pyReset').addEventListener('click', () => {
     if (!confirm('回答と採点結果を消して最初から解き直しますか？')) return;
     state = {current:0, answers:Array(questions.length).fill(null)}; document.body.classList.remove('qualification-submitted');$('pyResult').hidden=true;save(); render();
   });
-  render();
+  render();showQualificationView('qualMenu','Java 問題選択','qualMenuTab');
 })();

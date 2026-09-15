@@ -11,10 +11,13 @@
   const EXAM_CHOICES=["ア","イ","ウ","エ","オ","カ","キ","ク","ケ","コ"];
   const el = id => document.getElementById(id);
 
-  const views = ["homeView","quizView","drillView","drillResultView","cramView","cramResultView","resultView","overviewView","statsView","bGuideView"];
-  const tabMap={homeView:"tabHome",quizView:"tabQuiz",drillView:"tabDrill",statsView:"tabStats"};
+  const views = ["homeView","basicMenuView","quizView","drillView","drillResultView","cramView","cramResultView","resultView","overviewView","statsView","weaknessView","bGuideView"];
+  const tabMap={basicMenuView:"tabBasicMenu",quizView:"tabBasicMenu",drillView:"tabBasicMenu",drillResultView:"tabBasicMenu",cramView:"tabBasicMenu",cramResultView:"tabBasicMenu",resultView:"tabBasicMenu",overviewView:"tabBasicMenu",bGuideView:"tabBasicMenu",statsView:"tabBasicStats",weaknessView:"tabBasicWeakness"};
   function showView(id){
     views.forEach(v => el(v).hidden = v !== id);
+    const isAppHome=id==="homeView";
+    el("globalTabs").hidden=!isAppHome;
+    el("basicTabs").hidden=isAppHome;
     Object.values(tabMap).forEach(t=>el(t).classList.remove("active"));
     if(tabMap[id])el(tabMap[id]).classList.add("active");
     window.scrollTo({top:0,behavior:"auto"});
@@ -189,23 +192,27 @@
   function answerDrill(idx){ if(drillAnswered)return;drillAnswered=true;clearInterval(timerId);const q=drillSession[drillIndex];const correct=idx===q.displayAnswer;const stat=itemStat(q.id);stat.attempts++;stat.last=Date.now();drillState.attempts++; if(correct){drillCorrect++;stat.correct++;drillState.correct++;stat.level=Math.min(3,(stat.level||0)+1);const days=[0,1,3,7][stat.level];stat.due=Date.now()+days*86400000;} else{stat.level=0;stat.due=Date.now();const raw=terms.find(t=>t.id===q.id);if(raw)drillWrong.push(raw);} saveDrillState();[...el("drillOptions").children].forEach((btn,i)=>{btn.disabled=true;if(i===q.displayAnswer)btn.classList.add("correct-choice");if(i===idx&&!correct)btn.classList.add("wrong-choice");}); el("feedbackTitle").textContent=correct?"○ 正解":"× 正解は「"+q.displayOptions[q.displayAnswer]+"」";el("feedbackExplain").textContent=q.explain;el("feedbackContrast").textContent=q.contrast;el("feedbackExamQuestion").textContent=buildExamQuestion(q);el("drillFeedback").hidden=false;el("drillNextBtn").hidden=false;el("drillScore").textContent=`正解 ${drillCorrect}`; }
   function nextDrill(){if(!drillAnswered)return;if(drillIndex>=drillSession.length-1){finishDrill();return;}drillIndex++;renderDrill();}
   function finishDrill(){clearInterval(timerId);showView("drillResultView");setTitle("科目A　双方向3秒特訓");const total=drillSession.length;const pct=total?Math.round(drillCorrect/total*100):0;el("drillResultSummary").innerHTML=`<div class="score-big">${drillCorrect} / ${total}</div><p>正答率 <strong>${pct}%</strong></p><p>間違い ${drillWrong.length}問。正解した用語は1日→3日→7日後へ復習間隔を伸ばします。</p>`;el("retryWrongBtn").hidden=drillWrong.length===0;renderHomeStats();}
-  function goHome(){clearInterval(timerId);clearInterval(examTimerId);showView("homeView");setTitle("学習メニュー");renderHomeStats();}
+  function goHome(){clearInterval(timerId);clearInterval(examTimerId);showView("basicMenuView");setTitle("基本情報技術者");renderHomeStats();}
+  function goAppHome(){clearInterval(timerId);clearInterval(examTimerId);showView("homeView");setTitle("資格学習 HOME");}
 
-  el("homeBtn").addEventListener("click",goHome);el("startQuizBtn").addEventListener("click",openExam);el("startDrillBtn").addEventListener("click",()=>startDrill());el("startCramBtn").addEventListener("click",()=>startCram());el("sectionABtn").addEventListener("click",()=>switchSection("A"));el("sectionBBtn").addEventListener("click",()=>switchSection("B")); el("prevBtn").addEventListener("click",()=>goQuiz(-1));el("nextBtn").addEventListener("click",()=>goQuiz(1)); el("overviewBtn")?.addEventListener("click",showOverview);el("closeOverviewBtn").addEventListener("click",()=>{showView("quizView");renderQuiz();}); el("submitBtn").addEventListener("click",showSubmit);el("copyBtn").addEventListener("click",copyResult);el("backBtn").addEventListener("click",()=>{showView("quizView");renderQuiz();}); el("reviewFlag").addEventListener("change",e=>{const q=questions[current];quizState.review[q.id]=e.target.checked;saveQuizState();}); el("drillNextBtn").addEventListener("click",nextDrill);el("endDrillBtn").addEventListener("click",finishDrill);el("retryWrongBtn").addEventListener("click",()=>startDrill(drillWrong));el("drillHomeBtn").addEventListener("click",goHome);
+  el("homeBtn").addEventListener("click",goAppHome);el("openFeMenuBtn").addEventListener("click",goHome);el("startQuizBtn").addEventListener("click",openExam);el("startDrillBtn").addEventListener("click",()=>startDrill());el("startCramBtn").addEventListener("click",()=>startCram());el("sectionABtn").addEventListener("click",()=>switchSection("A"));el("sectionBBtn").addEventListener("click",()=>switchSection("B")); el("prevBtn").addEventListener("click",()=>goQuiz(-1));el("nextBtn").addEventListener("click",()=>goQuiz(1)); el("overviewBtn")?.addEventListener("click",showOverview);el("closeOverviewBtn").addEventListener("click",()=>{showView("quizView");renderQuiz();}); el("submitBtn").addEventListener("click",showSubmit);el("copyBtn").addEventListener("click",copyResult);el("backBtn").addEventListener("click",()=>{showView("quizView");renderQuiz();}); el("reviewFlag").addEventListener("change",e=>{const q=questions[current];quizState.review[q.id]=e.target.checked;saveQuizState();}); el("drillNextBtn").addEventListener("click",nextDrill);el("endDrillBtn").addEventListener("click",finishDrill);el("retryWrongBtn").addEventListener("click",()=>startDrill(drillWrong));el("drillHomeBtn").addEventListener("click",goHome);
   el("revealCramBtn").addEventListener("click",revealCram);el("cramKnownBtn").addEventListener("click",()=>judgeCram(true));el("cramUnsureBtn").addEventListener("click",()=>judgeCram(false));el("endCramBtn").addEventListener("click",finishCram);el("retryCramBtn").addEventListener("click",()=>startCram(cramUncertain));el("cramHomeBtn").addEventListener("click",goHome);
   el("resetExamTimerBtn").addEventListener("click",resetExamTimer);
   el("startBPracticeBtn").addEventListener("click",openBPractice);
   el("openBGuideBtn").addEventListener("click",openBGuide);
   el("guidePracticeBtn").addEventListener("click",openBPractice);
-  el("tabHome").addEventListener("click",goHome);
-  el("tabQuiz").addEventListener("click",openExam);
-  el("tabDrill").addEventListener("click",()=>startDrill());
-  el("tabStats").addEventListener("click",()=>{renderHomeStats();renderComparisons();showView("statsView");setTitle("学習状況");});
+  el("tabAppHome").addEventListener("click",goAppHome);
+  el("tabBasic").addEventListener("click",goHome);
+  el("tabBasicHome").addEventListener("click",goAppHome);
+  el("tabBasicMenu").addEventListener("click",goHome);
+  el("tabBasicStats").addEventListener("click",()=>{renderHomeStats();showView("statsView");setTitle("基本情報　学習状況");});
+  el("tabBasicWeakness").addEventListener("click",()=>{renderComparisons();showView("weaknessView");setTitle("基本情報　弱点克服");});
 
   renderHomeStats();
   const initialView=new URLSearchParams(window.location.search).get("view");
   if(initialView==="quiz")openExam();
   else if(initialView==="drill")startDrill();
   else if(initialView==="stats"){renderComparisons();showView("statsView");setTitle("学習状況");}
-  else goHome();
+  else if(initialView==="basic")goHome();
+  else goAppHome();
 })();

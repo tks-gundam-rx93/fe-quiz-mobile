@@ -19,12 +19,23 @@
     <main>
       <section id="homeView" class="home-view">
         <div class="hero-card">
+          <p class="mode-kicker">資格学習ポータル</p>
+          <h2>学習する資格を選択</h2>
+          <p>基本情報、Java、Python 3の問題演習と学習状況をまとめて管理します。</p>
+        </div>
+        <div class="mode-grid category-grid">
+          <button id="openFeMenuBtn" class="mode-card accent-card" type="button"><span class="mode-kicker">FE</span><strong>基本情報技術者</strong><span>第○回予測問題・3秒特訓・弱点克服</span></button>
+          <a class="mode-card python-mode-card" href="./java.html"><span class="mode-kicker">Oracle Java</span><strong>Java資格</strong><span>Bronze・Silver・Gold</span></a>
+          <a class="mode-card python-mode-card" href="./python.html"><span class="mode-kicker">Python</span><strong>Python 3</strong><span>基礎試験対策・学習状況・弱点克服</span></a>
+        </div>
+      </section>
+
+      <section id="basicMenuView" class="home-view" hidden>
+        <div class="hero-card">
           <h2>今日の学習</h2>
           <p>通常の予測問題と、科目A用語を反射的に答える「3秒特訓」を使い分けます。</p>
         </div>
         <div class="mode-grid">
-          <a class="mode-card python-mode-card" href="./python.html"><span class="mode-kicker">Python資格対策</span><strong>Python 3 基礎試験</strong><span>試験範囲に沿ったオリジナル4択問題・解説付き</span></a>
-          <a class="mode-card python-mode-card" href="./java.html"><span class="mode-kicker">Java資格対策</span><strong>Java SE Bronze</strong><span>1Z0-818-JPN対応・オリジナル4択問題・解説付き</span></a>
           <button id="startQuizBtn" class="mode-card" type="button">
             <span class="mode-kicker">本番対策</span>
             <strong>最終模試　第11回</strong>
@@ -154,6 +165,8 @@
           <div class="stats-row"><span>今日の復習対象</span><strong id="statsDue">0</strong></div>
           <div class="stats-row"><span>出題方式</span><strong>通常 ⇄ 逆転</strong></div>
         </div>
+      </section>
+      <section id="weaknessView" class="stats-view" hidden>
         <div class="comparison-section">
           <div class="comparison-heading">
             <div>
@@ -186,13 +199,17 @@
         <button id="guidePracticeBtn" class="primary full" type="button">攻略法を使って科目Bを解く</button>
       </section>
     </main>
-    <nav class="bottom-tabs" aria-label="画面切替">
-      <button id="tabHome" class="tab-btn active" type="button"><span>⌂</span><small>ホーム</small></button>
-      <button id="tabQuiz" class="tab-btn" type="button"><span>✓</span><small>予測問題</small></button>
-      <button id="tabDrill" class="tab-btn" type="button"><span>⚡</span><small>3秒特訓</small></button>
-      <button id="tabStats" class="tab-btn" type="button"><span>▥</span><small>学習状況</small></button>
+    <nav id="globalTabs" class="bottom-tabs four-tabs" aria-label="資格選択">
+      <button id="tabAppHome" class="tab-btn active" type="button"><span>⌂</span><small>HOME</small></button>
+      <button id="tabBasic" class="tab-btn" type="button"><span>FE</span><small>基本情報</small></button>
       <a class="tab-btn" href="./java.html"><span>J</span><small>Java</small></a>
-      <a class="tab-btn" href="./python.html"><span>Py</span><small>Python</small></a>
+      <a class="tab-btn" href="./python.html"><span>Py</span><small>Python3</small></a>
+    </nav>
+    <nav id="basicTabs" class="bottom-tabs four-tabs" aria-label="基本情報メニュー" hidden>
+      <button id="tabBasicHome" class="tab-btn" type="button"><span>⌂</span><small>HOME</small></button>
+      <button id="tabBasicMenu" class="tab-btn active" type="button"><span>✓</span><small>問題選択</small></button>
+      <button id="tabBasicStats" class="tab-btn" type="button"><span>▥</span><small>学習状況</small></button>
+      <button id="tabBasicWeakness" class="tab-btn" type="button"><span>!</span><small>弱点克服</small></button>
     </nav>
   </div>
   <script src="./terms.js"></script>
