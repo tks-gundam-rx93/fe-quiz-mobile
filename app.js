@@ -202,5 +202,10 @@
   el("tabDrill").addEventListener("click",()=>startDrill());
   el("tabStats").addEventListener("click",()=>{renderHomeStats();renderComparisons();showView("statsView");setTitle("学習状況");});
 
-  renderHomeStats();goHome();
+  renderHomeStats();
+  const initialView=new URLSearchParams(window.location.search).get("view");
+  if(initialView==="quiz")openExam();
+  else if(initialView==="drill")startDrill();
+  else if(initialView==="stats"){renderComparisons();showView("statsView");setTitle("学習状況");}
+  else goHome();
 })();
