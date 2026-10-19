@@ -190,6 +190,57 @@
   function goQuiz(delta){const indexes=sectionIndexes(activeSection);const localIndex=indexes.indexOf(current);if(delta>0&&localIndex===indexes.length-1){if(activeSection==="A")switchSection("B");else{current=indexes[0];renderQuiz();}}else{current=indexes[Math.max(0,Math.min(indexes.length-1,localIndex+delta))];renderQuiz();}window.scrollTo({top:0,behavior:"smooth"});}
   function showOverview(){ showView("overviewView");setTitle(`予測問題　第${QUIZ_ROUND}回`);const grid=el("overviewGrid");grid.innerHTML=""; questions.forEach((q,idx)=>{const btn=document.createElement("button");btn.type="button";const classes=["overview-item"];if(quizState.answers[q.id]!==undefined)classes.push("answered");if(quizState.review[q.id])classes.push("review");if(idx===current)classes.push("current");btn.className=classes.join(" ");btn.textContent=q.id;btn.addEventListener("click",()=>{current=idx;showView("quizView");renderQuiz();});grid.appendChild(btn);}); }
   function showSubmit(){const lines=[`FE最終模試 第${QUIZ_ROUND}回 回答`];["A","B"].forEach(section=>{lines.push("",`科目${section}`);questions.filter(q=>q.section===section).forEach(q=>{const a=quizState.answers[q.id];lines.push(`問${q.displayNo||q.id}. ${a===undefined?"未回答":EXAM_CHOICES[a]}`);});const reviewIds=questions.filter(q=>q.section===section&&quizState.review[q.id]).map(q=>`問${q.displayNo||q.id}`);if(reviewIds.length)lines.push(`見直し指定: ${reviewIds.join(", ")}`);});lines.push("","上記の回答を採点し、間違えた問題の解説と弱点分野を教えてください。同時に、今回の弱点を反映した次の予測問題を作成してください。");el("resultText").value=lines.join("\n");showView("resultView");setTitle(`最終模試　第${QUIZ_ROUND}回`);window.scrollTo({top:0,behavior:"smooth"});}
+
+  function chosenLabel(q,selected){
+    return selected===undefined?"未回答":(EXAM_CHOICES[selected]||"?")+"："+(q.options[selected]||"選択肢なし");
+  }
+  function gradeCard(q){
+    const mine=chosenLabel(q,q.chosen),right=chosenLabel(q,q.correct);
+    const code=q.code?'<pre class="grade-code">'+escapeHtml(q.code)+'</pre>':"";
+    const figure=q.figure?'<div class="grade-figure">'+q.figure+'</div>':"";
+    const explanation=q.explain||"正答と選択肢を比較し、出題分野の定義・処理手順を復習してください。";
+    return '<details class="grade-card"><summary><strong>科目'+q.section+' 問'+q.displayNo+'｜'+escapeHtml(q.category)+'</strong><span>正解：'+(EXAM_CHOICES[q.correct]||"?")+'</span></summary><div class="grade-body"><p>'+escapeHtml(q.question)+'</p>'+figure+code+'<p><strong>あなたの回答：</strong>'+escapeHtml(mine)+'</p><p><strong>正解：</strong>'+escapeHtml(right)+'</p><p><strong>解説：</strong>'+escapeHtml(explanation)+'</p></div></details>';
+  }
+  function gradeExam(){
+    const breakdown=["A","B"].map(section=>{
+      const subset=questions.filter(q=>q.section===section);
+      return {section,total:subset.length,correct:subset.filter(q=>quizState.answers[q.id]===q.correct).length,
+        unanswered:subset.filter(q=>quizState.answers[q.id]===undefined).length};
+    });
+    const wrong=questions.filter(q=>quizState.answers[q.id]!==q.correct)
+      .map(q=>({...q,chosen:quizState.answers[q.id]}));
+    const correct=breakdown.reduce((sum,item)=>sum+item.correct,0);
+    const payload={round:QUIZ_ROUND,gradedAt:new Date().toISOString(),breakdown,correct,total:questions.length,wrong};
+    localStorage.setItem(GRADE_KEY,JSON.stringify(payload));
+    const summary=breakdown.map(x=>"科目"+x.section+"："+x.correct+"/"+x.total+"問（未回答"+x.unanswered+"問）").join("／");
+    const out=el("gradeExamOutput");
+    out.hidden=false;
+    out.innerHTML='<h3>採点結果：'+correct+' / '+questions.length+'問正解</h3><p>'+summary+'</p><p>誤答・未回答 '+wrong.length+'問（正答率'+Math.round(correct/questions.length*100)+'%）。※単純正答率であり、本試験CBTの評価点ではありません。</p>'+(wrong.length?wrong.map(gradeCard).join(""):"<p>全問正解です。</p>");
+    el("gradeExamBtn").textContent="再採点する";
+    toast("採点結果を保存しました");
+  }
+  function showLastMistakes(){
+    let saved=null;
+    try{saved=JSON.parse(localStorage.getItem(GRADE_KEY)||"null");}catch(_){}
+    let wrong=[],title="",summary="";
+    if(saved&&saved.round===QUIZ_ROUND){
+      wrong=saved.wrong||[];title="第"+saved.round+"回の誤答解説";
+      summary=saved.total+"問中"+saved.correct+"問正解。誤答・未回答 "+wrong.length+"問。";
+    }else{
+      // 第11回までの回答記録は旧キーで保持される。記録がない場合はその旨を表示。
+      let prev={};
+      try{prev=JSON.parse(localStorage.getItem("fe-quiz-mobile-round-11-official-ab-v4")||"{}");}catch(_){}
+      const answered=(window.FE11_QUESTIONS||[]).filter(q=>prev.answers&&prev.answers[q.id]!==undefined);
+      wrong=answered.filter(q=>prev.answers[q.id]!==q.correct).map(q=>({...q,chosen:prev.answers[q.id]}));
+      title="第11回の解答見直し";
+      summary=answered.length?"回答記録 "+answered.length+"問、誤答 "+wrong.length+"問（提出済みとは限りません）。":"過去の回答データがありません。第12回の採点後に誤答を保存できます。";
+    }
+    el("lastMistakesTitle").textContent=title;
+    el("lastMistakesSummary").textContent=summary;
+    el("lastMistakesList").innerHTML=wrong.length?wrong.map(gradeCard).join(""):"<p>表示する誤答はありません。</p>";
+    showView("lastMistakesView");setTitle("前回の誤答解説");
+  }
+
   async function copyResult(){const text=el("resultText").value;try{await navigator.clipboard.writeText(text);toast("回答をコピーしました");}catch(_){el("resultText").focus();el("resultText").select();document.execCommand("copy");toast("回答をコピーしました");}}
 
   const drillState=loadDrillState();
@@ -307,6 +358,9 @@
   function goAppHome(){clearInterval(timerId);clearInterval(examTimerId);showView("homeView");setTitle("資格学習 HOME");}
 
   initExamSettings();
+  el("gradeExamBtn").addEventListener("click",gradeExam);
+  el("reviewLastMistakesBtn").addEventListener("click",showLastMistakes);
+  el("lastMistakesHomeBtn").addEventListener("click",goHome);
   el("homeBtn").addEventListener("click",goAppHome);el("openFeMenuBtn").addEventListener("click",goHome);el("startQuizBtn").addEventListener("click",openExam);el("startDrillBtn").addEventListener("click",()=>startDrill());el("startCramBtn").addEventListener("click",()=>startCram());el("sectionABtn").addEventListener("click",()=>switchSection("A"));el("sectionBBtn").addEventListener("click",()=>switchSection("B")); el("prevBtn").addEventListener("click",()=>goQuiz(-1));el("nextBtn").addEventListener("click",()=>goQuiz(1)); el("overviewBtn")?.addEventListener("click",showOverview);el("closeOverviewBtn").addEventListener("click",()=>{showView("quizView");renderQuiz();}); el("submitBtn").addEventListener("click",showSubmit);el("copyBtn").addEventListener("click",copyResult);el("backBtn").addEventListener("click",()=>{showView("quizView");renderQuiz();}); el("reviewFlag").addEventListener("change",e=>{const q=questions[current];quizState.review[q.id]=e.target.checked;saveQuizState();}); el("drillNextBtn").addEventListener("click",nextDrill);el("endDrillBtn").addEventListener("click",finishDrill);el("retryWrongBtn").addEventListener("click",()=>startDrill(drillWrong));el("drillHomeBtn").addEventListener("click",goHome);
   el("revealCramBtn").addEventListener("click",revealCram);el("cramKnownBtn").addEventListener("click",()=>judgeCram(true));el("cramUnsureBtn").addEventListener("click",()=>judgeCram(false));el("endCramBtn").addEventListener("click",finishCram);el("retryCramBtn").addEventListener("click",()=>startCram(cramUncertain));el("cramHomeBtn").addEventListener("click",goHome);
   el("resetExamTimerBtn").addEventListener("click",resetExamTimer);
