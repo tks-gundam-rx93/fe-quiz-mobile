@@ -29,3 +29,35 @@
 /* 選択肢数と画面幅から列数を自動計算する */
 .options{grid-template-columns:repeat(auto-fit,minmax(min(clamp(165px,22vw,240px),100%),1fr));align-items:stretch}
 .option-btn{height:100%;overflow-wrap:anywhere}
+
+/* 第12回：出題設定と誤答レビュー。OSの既存カラートークンを利用 */
+.exam-settings{margin:12px 0 16px;padding:16px}
+.exam-settings h3{margin:0 0 6px}
+.settings-help{margin:0 0 12px;color:var(--muted);font-size:.85rem}
+.exam-settings-row{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:10px 0;border-top:1px solid var(--border)}
+.exam-settings-row label{font-weight:750;font-size:.9rem}
+.exam-settings-row input{width:92px;min-width:72px;border:1px solid var(--border);border-radius:7px;padding:9px;background:var(--surface);color:var(--text);font-size:1rem;text-align:center}
+.topic-settings{border:1px solid var(--border);border-radius:9px;padding:12px;margin:10px 0}
+.topic-settings legend{font-size:.86rem;font-weight:800;padding:0 7px}
+.topic-choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:9px}
+.fe-topic-choice{display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--border);padding:10px;border-radius:8px;cursor:pointer;font-size:.83rem;font-weight:650}
+.fe-topic-choice input{accent-color:var(--accent);width:18px;height:18px;flex-shrink:0}
+.topic-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.topic-actions button{font-size:.78rem}
+.exam-preview{border:1px solid var(--selected-border);background:var(--selected);border-radius:8px;padding:10px;margin:10px 0 0;line-height:1.55;font-size:.82rem;font-weight:700}
+.settings-warning{color:var(--warning-text);background:var(--warning-bg)}
+.mode-card:disabled{opacity:.45;cursor:not-allowed}
+.grading-output{display:grid;gap:10px;text-align:left}
+.grading-output h3{margin:4px 0}
+.grading-output > p{margin:0 0 4px;line-height:1.5}
+.grade-card{border:1px solid var(--border);border-radius:9px;background:var(--surface);overflow:hidden}
+.grade-card summary{cursor:pointer;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;list-style:none}
+.grade-card summary::-webkit-details-marker{display:none}
+.grade-card summary strong{font-size:.88rem}
+.grade-card summary span{white-space:nowrap;color:var(--accent);font-weight:800;font-size:.8rem}
+.grade-body{border-top:1px solid var(--border);padding:12px;overflow-wrap:anywhere}
+.grade-body p{white-space:pre-line;line-height:1.6;font-size:.85rem}
+.grade-code{white-space:pre-wrap;overflow:visible;overflow-wrap:anywhere;border-radius:8px;background:var(--code-bg);color:var(--code-text);padding:12px;font-size:.81rem}
+.grade-figure{max-width:100%;overflow-x:auto}
+.grade-figure svg{max-width:100%}
+@media(max-width:540px){.exam-settings{padding:12px}.topic-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fe-topic-choice{padding:9px 6px;font-size:.75rem}.grade-card summary{align-items:flex-start;flex-direction:column;gap:6px}}

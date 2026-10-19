@@ -1,18 +1,21 @@
 (() => {
-  const questions = window.FE_QUESTIONS || [];
+  let questions = window.FE_QUESTIONS || [];
   const terms = window.FE_TERMS || [];
   const priorityTerms = window.FE_PRIORITY_TERMS || [];
   const comparisons = window.FE_COMPARISONS || [];
   const QUIZ_ROUND = window.FE_ROUND || 4;
   const QUIZ_KEY = `fe-quiz-mobile-round-${QUIZ_ROUND}-official-ab-v4`;
   const DRILL_KEY = "fe-term-drill-v1";
+  const SETTINGS_KEY = "fe-round-"+QUIZ_ROUND+"-settings-v1";
+  const GRADE_KEY = "fe-latest-graded-exam-v1";
+  const B_TOPICS = ["配列","複数関数","再帰","探索・整列","データ構造","ビット演算","文字列","情報セキュリティ"];
   const SESSION_SIZE = 20;
   const EXAM_MINUTES={A:90,B:100};
   const EXAM_CHOICES=["ア","イ","ウ","エ","オ","カ","キ","ク","ケ","コ"];
   const el = id => document.getElementById(id);
 
-  const views = ["homeView","basicMenuView","quizView","drillView","drillResultView","cramView","cramResultView","resultView","overviewView","statsView","weaknessView","bGuideView"];
-  const tabMap={basicMenuView:"tabBasicMenu",quizView:"tabBasicMenu",drillView:"tabBasicMenu",drillResultView:"tabBasicMenu",cramView:"tabBasicMenu",cramResultView:"tabBasicMenu",resultView:"tabBasicMenu",overviewView:"tabBasicMenu",bGuideView:"tabBasicMenu",statsView:"tabBasicStats",weaknessView:"tabBasicWeakness"};
+  const views = ["homeView","basicMenuView","quizView","drillView","drillResultView","cramView","cramResultView","resultView","lastMistakesView","overviewView","statsView","weaknessView","bGuideView"];
+  const tabMap={basicMenuView:"tabBasicMenu",quizView:"tabBasicMenu",drillView:"tabBasicMenu",drillResultView:"tabBasicMenu",cramView:"tabBasicMenu",cramResultView:"tabBasicMenu",resultView:"tabBasicMenu",lastMistakesView:"tabBasicMenu",overviewView:"tabBasicMenu",bGuideView:"tabBasicMenu",statsView:"tabBasicStats",weaknessView:"tabBasicWeakness"};
   function showView(id){
     views.forEach(v => el(v).hidden = v !== id);
     const isAppHome=id==="homeView";
@@ -41,24 +44,131 @@
     return `次の記述に該当する用語として、最も適切なものはどれか。\n「${p}」`;
   }
 
+
+  // 出題条件の保存。問題データ自体は固定し、学習セッションのみ条件に合わせて組み立てる。
+  function bTopic(q){
+    const name=q.category||"";
+    if(name.startsWith("情報セキュリティ"))return "情報セキュリティ";
+    if(name.startsWith("配列"))return "配列";
+    if(name.startsWith("複数関数"))return "複数関数";
+    if(name.startsWith("再帰")||name.startsWith("木"))return "再帰";
+    if(name.startsWith("探索・整列"))return "探索・整列";
+    if(name.startsWith("データ構造"))return "データ構造";
+    if(name.startsWith("ビット演算"))return "ビット演算";
+    if(name.startsWith("文字列"))return "文字列";
+    return "データ構造";
+  }
+  function clampCount(v,min,max,fallback){
+    const n=Number(v);
+    return Number.isInteger(n)?Math.min(max,Math.max(min,n)):fallback;
+  }
+  function loadExamSettings(){
+    let saved={};
+    try{saved=JSON.parse(localStorage.getItem(SETTINGS_KEY)||"{}")||{};}catch(_){}
+    return {aCount:clampCount(saved.aCount,1,60,60),
+      bCount:clampCount(saved.bCount,1,20,20),
+      topics:Array.isArray(saved.topics)?saved.topics.filter(t=>B_TOPICS.includes(t)):B_TOPICS.slice()};
+  }
+  let examSettings=loadExamSettings();
+  function saveExamSettings(){localStorage.setItem(SETTINGS_KEY,JSON.stringify(examSettings));}
+  function sampleEvenly(items,count){
+    if(count>=items.length)return items.slice();
+    const sample=[];
+    for(let i=0;i<count;i++)sample.push(items[Math.floor((i+0.5)*items.length/count)]);
+    return sample;
+  }
+  function eligibleB(){
+    return (window.FE_QUESTIONS||[]).filter(q=>q.section==="B"&&examSettings.topics.includes(bTopic(q)));
+  }
+  function buildExamSelection(){
+    const bank=window.FE_QUESTIONS||[];
+    const sourceA=bank.filter(q=>q.section==="A");
+    const sourceB=eligibleB();
+    const a=sampleEvenly(sourceA,Math.min(sourceA.length,examSettings.aCount));
+    const bLimit=Math.min(examSettings.bCount,sourceB.length);
+    const security=sourceB.filter(q=>bTopic(q)==="情報セキュリティ");
+    const logic=sourceB.filter(q=>bTopic(q)!=="情報セキュリティ");
+    const secCount=logic.length?Math.min(security.length,Math.min(bLimit,Math.round(bLimit*0.2))):Math.min(security.length,bLimit);
+    const picked=[...sampleEvenly(logic,Math.min(logic.length,bLimit-secCount)),...sampleEvenly(security,secCount)];
+    for(const q of sourceB)if(picked.length<bLimit&&!picked.some(x=>x.id===q.id))picked.push(q);
+    picked.sort((a,b)=>a.id-b.id);
+    return [...a.map((q,i)=>({...q,displayNo:i+1})),...picked.map((q,i)=>({...q,displayNo:i+1}))];
+  }
+  function sectionMinutes(section){
+    const actual=questions.filter(q=>q.section===section).length;
+    return Math.max(1,Math.ceil(EXAM_MINUTES[section]*actual/(section==="A"?60:20)));
+  }
+  function renderExamSettings(){
+    const aTotal=(window.FE_QUESTIONS||[]).filter(q=>q.section==="A").length;
+    const bEligible=eligibleB().length;
+    const aNumber=Math.min(aTotal,examSettings.aCount);
+    const bNumber=Math.min(bEligible,examSettings.bCount);
+    el("feACount").value=String(examSettings.aCount);
+    el("feBCount").value=String(examSettings.bCount);
+    const preview=el("feExamPreview");
+    preview.textContent=bNumber
+      ?"出題予定：科目A "+aNumber+"問（"+sectionMinutes("A")+"分）／科目B "+bNumber+"問（"+sectionMinutes("B")+"分）。科目Bの対象は"+examSettings.topics.length+"分野です。"
+      :"科目Bの対象問題が0問です。科目Aだけの演習は可能です。科目Bも解くには分野を選択してください。";
+    preview.classList.toggle("settings-warning",bNumber===0);
+    el("startQuizBtn").disabled=bNumber===0;
+    el("startBPracticeBtn").disabled=bNumber===0;
+  }
+  function changeExamSettings(){
+    saveExamSettings();
+    questions=buildExamSelection();
+    // 出題条件の変更で回答対象が変わるため、新規演習としてリセットする。
+    quizState.answers={};quizState.review={};quizState.current=0;quizState.deadlines={};current=0;
+    saveQuizState();renderExamSettings();
+  }
+  function initExamSettings(){
+    const a=el("feACount"),b=el("feBCount"),choices=el("feTopicChoices");
+    const totalA=(window.FE_QUESTIONS||[]).filter(q=>q.section==="A").length;
+    const totalB=(window.FE_QUESTIONS||[]).filter(q=>q.section==="B").length;
+    a.max=String(totalA);b.max=String(totalB);
+    a.addEventListener("change",()=>{examSettings.aCount=clampCount(a.value,1,totalA,examSettings.aCount);changeExamSettings();});
+    b.addEventListener("change",()=>{examSettings.bCount=clampCount(b.value,1,totalB,examSettings.bCount);changeExamSettings();});
+    const redraw=()=>{
+      choices.innerHTML="";
+      B_TOPICS.forEach(topic=>{
+        const available=(window.FE_QUESTIONS||[]).filter(q=>q.section==="B"&&bTopic(q)===topic).length;
+        const label=document.createElement("label");label.className="fe-topic-choice";
+        const input=document.createElement("input");input.type="checkbox";input.checked=examSettings.topics.includes(topic);
+        const text=document.createElement("span");text.textContent=topic+"（"+available+"問）";
+        input.addEventListener("change",()=>{
+          if(input.checked&&!examSettings.topics.includes(topic))examSettings.topics.push(topic);
+          if(!input.checked)examSettings.topics=examSettings.topics.filter(t=>t!==topic);
+          changeExamSettings();
+        });
+        label.append(input,text);choices.appendChild(label);
+      });
+      renderExamSettings();
+    };
+    el("feSelectAllTopicsBtn").addEventListener("click",()=>{examSettings.topics=B_TOPICS.slice();changeExamSettings();redraw();});
+    el("feClearAllTopicsBtn").addEventListener("click",()=>{examSettings.topics=[];changeExamSettings();redraw();});
+    redraw();
+  }
+
   const quizState=loadQuizState();
+  questions=buildExamSelection();
   let current=Math.min(quizState.current||0,Math.max(questions.length-1,0));
-  let activeSection=questions[current]?.section||"A",examTimerId=null;
+  let activeSection=questions[current]?.section||"A",examTimerId=null,practiceMode="AB";
   function blankQuizState(){ return {answers:{},review:{},current:0,deadlines:{}}; }
   function loadQuizState(){ try{return Object.assign(blankQuizState(),JSON.parse(localStorage.getItem(QUIZ_KEY)||"{}"));}catch(_){return blankQuizState();} }
   function saveQuizState(){ quizState.current=current; localStorage.setItem(QUIZ_KEY,JSON.stringify(quizState)); }
   function sectionIndexes(section){return questions.map((q,i)=>q.section===section?i:-1).filter(i=>i>=0);}
   function updateExamTimer(){
     quizState.deadlines=quizState.deadlines||{};
-    if(!quizState.deadlines[activeSection]){quizState.deadlines[activeSection]=Date.now()+EXAM_MINUTES[activeSection]*60000;saveQuizState();}
+    if(!quizState.deadlines[activeSection]){quizState.deadlines[activeSection]=Date.now()+sectionMinutes(activeSection)*60000;saveQuizState();}
     const remain=Math.max(0,quizState.deadlines[activeSection]-Date.now());const minutes=Math.floor(remain/60000);const seconds=Math.floor((remain%60000)/1000);
     el("examTimer").textContent=`${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;el("examTimer").classList.toggle("expired",remain===0);
   }
   function startExamTimer(){clearInterval(examTimerId);updateExamTimer();examTimerId=setInterval(updateExamTimer,1000);}
   function resetExamTimer(){quizState.deadlines=quizState.deadlines||{};delete quizState.deadlines[activeSection];saveQuizState();updateExamTimer();toast(`科目${activeSection}の時間をリセットしました`);}
-  function switchSection(section){activeSection=section;const indexes=sectionIndexes(section);if(!indexes.includes(current))current=indexes[0];renderQuiz();}
-  function openExam(){showView("quizView");setTitle(`最終模試　第${QUIZ_ROUND}回`);renderQuiz();}
-  function openBPractice(){showView("quizView");setTitle("科目B 実戦特訓");switchSection("B");}
+  function switchSection(section){const indexes=sectionIndexes(section);if(!indexes.length){toast("選択した科目の問題がありません");return;}activeSection=section;if(!indexes.includes(current))current=indexes[0];renderQuiz();}
+  function openExam(){if(!sectionIndexes("B").length){toast("科目Bの出題分野を選択してください");return;}if(practiceMode!=="AB")current=sectionIndexes("A")[0];practiceMode="AB";showView("quizView");setTitle(`最終模試　第${QUIZ_ROUND}回`);renderQuiz();}
+  function openAPractice(){practiceMode="A";showView("quizView");setTitle("科目A 集中特訓");switchSection("A");}
+  function openBPractice(){practiceMode="B";showView("quizView");setTitle("科目B 実戦特訓");switchSection("B");}
+  function gradedQuestions(){return practiceMode==="AB"?questions:questions.filter(q=>q.section===practiceMode);}
   function openBGuide(){showView("bGuideView");setTitle("科目B 攻略法");}
   function renderQuiz(){
     if(!questions.length)return;
@@ -67,7 +177,11 @@
     el("counter").textContent=`科目${activeSection}　問題 ${localIndex+1} / ${indexes.length}`;
     el("answeredCount").textContent=`回答済み ${answered} / ${indexes.length}`;
     el("progressBar").style.width=`${((localIndex+1)/indexes.length)*100}%`;
-    el("sectionABtn").classList.toggle("active",activeSection==="A");el("sectionBBtn").classList.toggle("active",activeSection==="B");startExamTimer();
+    el("sectionABtn").classList.toggle("active",activeSection==="A");el("sectionBBtn").classList.toggle("active",activeSection==="B");
+    el("sectionABtn").disabled=practiceMode==="B";el("sectionBBtn").disabled=practiceMode==="A"||sectionIndexes("B").length===0;
+    el("sectionABtn").querySelector("small").textContent=sectionIndexes("A").length+"問・"+sectionMinutes("A")+"分";
+    el("sectionBBtn").querySelector("small").textContent=sectionIndexes("B").length+"問・"+sectionMinutes("B")+"分";
+    startExamTimer();
     el("sectionBadge").textContent=`科目${q.section}`; el("categoryBadge").textContent=q.category; el("importanceBadge").textContent=`重要度 ${q.importance}`;
     el("questionText").textContent=`問${q.displayNo||q.id}　${q.question}`;
     const figure=el("figureBlock");if(q.figure){figure.hidden=false;figure.innerHTML=q.figure;}else{figure.hidden=true;figure.innerHTML="";}
@@ -76,9 +190,61 @@
     q.options.forEach((text,idx)=>{ const btn=document.createElement("button"); btn.type="button"; btn.className="option-btn"+(quizState.answers[q.id]===idx?" selected":""); btn.innerHTML=`<span class="choice-letter">${EXAM_CHOICES[idx]}</span><span>${escapeHtml(text)}</span>`; btn.addEventListener("click",()=>{quizState.answers[q.id]=idx;saveQuizState();renderQuiz();}); options.appendChild(btn); });
     el("reviewFlag").checked=!!quizState.review[q.id];el("prevBtn").disabled=localIndex===0;el("nextBtn").textContent=localIndex===indexes.length-1?(activeSection==="A"?"科目Bへ →":"先頭へ ↺"):"次へ →";saveQuizState();
   }
-  function goQuiz(delta){const indexes=sectionIndexes(activeSection);const localIndex=indexes.indexOf(current);if(delta>0&&localIndex===indexes.length-1){if(activeSection==="A")switchSection("B");else{current=indexes[0];renderQuiz();}}else{current=indexes[Math.max(0,Math.min(indexes.length-1,localIndex+delta))];renderQuiz();}window.scrollTo({top:0,behavior:"smooth"});}
+  function goQuiz(delta){const indexes=sectionIndexes(activeSection);const localIndex=indexes.indexOf(current);if(delta>0&&localIndex===indexes.length-1){if(activeSection==="A"&&practiceMode==="AB"&&sectionIndexes("B").length)switchSection("B");else{current=indexes[0];renderQuiz();}}else{current=indexes[Math.max(0,Math.min(indexes.length-1,localIndex+delta))];renderQuiz();}window.scrollTo({top:0,behavior:"smooth"});}
   function showOverview(){ showView("overviewView");setTitle(`予測問題　第${QUIZ_ROUND}回`);const grid=el("overviewGrid");grid.innerHTML=""; questions.forEach((q,idx)=>{const btn=document.createElement("button");btn.type="button";const classes=["overview-item"];if(quizState.answers[q.id]!==undefined)classes.push("answered");if(quizState.review[q.id])classes.push("review");if(idx===current)classes.push("current");btn.className=classes.join(" ");btn.textContent=q.id;btn.addEventListener("click",()=>{current=idx;showView("quizView");renderQuiz();});grid.appendChild(btn);}); }
-  function showSubmit(){const lines=[`FE最終模試 第${QUIZ_ROUND}回 回答`];["A","B"].forEach(section=>{lines.push("",`科目${section}`);questions.filter(q=>q.section===section).forEach(q=>{const a=quizState.answers[q.id];lines.push(`問${q.displayNo||q.id}. ${a===undefined?"未回答":EXAM_CHOICES[a]}`);});const reviewIds=questions.filter(q=>q.section===section&&quizState.review[q.id]).map(q=>`問${q.displayNo||q.id}`);if(reviewIds.length)lines.push(`見直し指定: ${reviewIds.join(", ")}`);});lines.push("","上記の回答を採点し、間違えた問題の解説と弱点分野を教えてください。同時に、今回の弱点を反映した次の予測問題を作成してください。");el("resultText").value=lines.join("\n");showView("resultView");setTitle(`最終模試　第${QUIZ_ROUND}回`);window.scrollTo({top:0,behavior:"smooth"});}
+  function showSubmit(){const lines=[`FE最終模試 第${QUIZ_ROUND}回 回答`];(practiceMode==="AB"?["A","B"]:[practiceMode]).forEach(section=>{lines.push("",`科目${section}`);questions.filter(q=>q.section===section).forEach(q=>{const a=quizState.answers[q.id];lines.push(`問${q.displayNo||q.id}. ${a===undefined?"未回答":EXAM_CHOICES[a]}`);});const reviewIds=questions.filter(q=>q.section===section&&quizState.review[q.id]).map(q=>`問${q.displayNo||q.id}`);if(reviewIds.length)lines.push(`見直し指定: ${reviewIds.join(", ")}`);});lines.push("","上記の回答を採点し、間違えた問題の解説と弱点分野を教えてください。同時に、今回の弱点を反映した次の予測問題を作成してください。");el("resultText").value=lines.join("\n");el("gradeExamOutput").hidden=true;el("gradeExamOutput").innerHTML="";el("gradeExamBtn").textContent="この回答を採点する";showView("resultView");setTitle(`最終模試　第${QUIZ_ROUND}回`);window.scrollTo({top:0,behavior:"smooth"});}
+
+  function chosenLabel(q,selected){
+    return selected===undefined?"未回答":(EXAM_CHOICES[selected]||"?")+"："+(q.options[selected]||"選択肢なし");
+  }
+  function gradeCard(q){
+    const mine=chosenLabel(q,q.chosen),right=chosenLabel(q,q.correct);
+    const code=q.code?'<pre class="grade-code">'+escapeHtml(q.code)+'</pre>':"";
+    const figure=q.figure?'<div class="grade-figure">'+q.figure+'</div>':"";
+    const explanation=q.explain||"正答と選択肢を比較し、出題分野の定義・処理手順を復習してください。";
+    return '<details class="grade-card"><summary><strong>科目'+q.section+' 問'+q.displayNo+'｜'+escapeHtml(q.category)+'</strong><span>正解：'+(EXAM_CHOICES[q.correct]||"?")+'</span></summary><div class="grade-body"><p>'+escapeHtml(q.question)+'</p>'+figure+code+'<p><strong>あなたの回答：</strong>'+escapeHtml(mine)+'</p><p><strong>正解：</strong>'+escapeHtml(right)+'</p><p><strong>解説：</strong>'+escapeHtml(explanation)+'</p></div></details>';
+  }
+  function gradeExam(){
+    const breakdown=(practiceMode==="AB"?["A","B"]:[practiceMode]).map(section=>{
+      const subset=gradedQuestions().filter(q=>q.section===section);
+      return {section,total:subset.length,correct:subset.filter(q=>quizState.answers[q.id]===q.correct).length,
+        unanswered:subset.filter(q=>quizState.answers[q.id]===undefined).length};
+    });
+    const wrong=gradedQuestions().filter(q=>quizState.answers[q.id]!==q.correct)
+      .map(q=>({...q,chosen:quizState.answers[q.id]}));
+    const correct=breakdown.reduce((sum,item)=>sum+item.correct,0);
+    const total=gradedQuestions().length;
+    const payload={round:QUIZ_ROUND,gradedAt:new Date().toISOString(),breakdown,correct,total,wrong};
+    localStorage.setItem(GRADE_KEY,JSON.stringify(payload));
+    const summary=breakdown.map(x=>"科目"+x.section+"："+x.correct+"/"+x.total+"問（未回答"+x.unanswered+"問）").join("／");
+    const out=el("gradeExamOutput");
+    out.hidden=false;
+    out.innerHTML='<h3>採点結果：'+correct+' / '+total+'問正解</h3><p>'+summary+'</p><p>誤答・未回答 '+wrong.length+'問（正答率'+Math.round(correct/total*100)+'%）。※単純正答率であり、本試験CBTの評価点ではありません。</p>'+(wrong.length?wrong.map(gradeCard).join(""):"<p>全問正解です。</p>");
+    el("gradeExamBtn").textContent="再採点する";
+    toast("採点結果を保存しました");
+  }
+  function showLastMistakes(){
+    let saved=null;
+    try{saved=JSON.parse(localStorage.getItem(GRADE_KEY)||"null");}catch(_){}
+    let wrong=[],title="",summary="";
+    if(saved&&saved.round===QUIZ_ROUND){
+      wrong=saved.wrong||[];title="第"+saved.round+"回の誤答解説";
+      summary=saved.total+"問中"+saved.correct+"問正解。誤答・未回答 "+wrong.length+"問。";
+    }else{
+      // 第11回までの回答記録は旧キーで保持される。記録がない場合はその旨を表示。
+      let prev={};
+      try{prev=JSON.parse(localStorage.getItem("fe-quiz-mobile-round-11-official-ab-v4")||"{}");}catch(_){}
+      const answered=(window.FE11_QUESTIONS||[]).filter(q=>prev.answers&&prev.answers[q.id]!==undefined);
+      wrong=answered.filter(q=>prev.answers[q.id]!==q.correct).map(q=>({...q,chosen:prev.answers[q.id]}));
+      title="第11回の解答見直し";
+      summary=answered.length?"回答記録 "+answered.length+"問、誤答 "+wrong.length+"問（提出済みとは限りません）。":"過去の回答データがありません。第12回の採点後に誤答を保存できます。";
+    }
+    el("lastMistakesTitle").textContent=title;
+    el("lastMistakesSummary").textContent=summary;
+    el("lastMistakesList").innerHTML=wrong.length?wrong.map(gradeCard).join(""):"<p>表示する誤答はありません。</p>";
+    showView("lastMistakesView");setTitle("前回の誤答解説");
+  }
+
   async function copyResult(){const text=el("resultText").value;try{await navigator.clipboard.writeText(text);toast("回答をコピーしました");}catch(_){el("resultText").focus();el("resultText").select();document.execCommand("copy");toast("回答をコピーしました");}}
 
   const drillState=loadDrillState();
@@ -195,7 +361,11 @@
   function goHome(){clearInterval(timerId);clearInterval(examTimerId);showView("basicMenuView");setTitle("基本情報技術者");renderHomeStats();}
   function goAppHome(){clearInterval(timerId);clearInterval(examTimerId);showView("homeView");setTitle("資格学習 HOME");}
 
-  el("homeBtn").addEventListener("click",goAppHome);el("openFeMenuBtn").addEventListener("click",goHome);el("startQuizBtn").addEventListener("click",openExam);el("startDrillBtn").addEventListener("click",()=>startDrill());el("startCramBtn").addEventListener("click",()=>startCram());el("sectionABtn").addEventListener("click",()=>switchSection("A"));el("sectionBBtn").addEventListener("click",()=>switchSection("B")); el("prevBtn").addEventListener("click",()=>goQuiz(-1));el("nextBtn").addEventListener("click",()=>goQuiz(1)); el("overviewBtn")?.addEventListener("click",showOverview);el("closeOverviewBtn").addEventListener("click",()=>{showView("quizView");renderQuiz();}); el("submitBtn").addEventListener("click",showSubmit);el("copyBtn").addEventListener("click",copyResult);el("backBtn").addEventListener("click",()=>{showView("quizView");renderQuiz();}); el("reviewFlag").addEventListener("change",e=>{const q=questions[current];quizState.review[q.id]=e.target.checked;saveQuizState();}); el("drillNextBtn").addEventListener("click",nextDrill);el("endDrillBtn").addEventListener("click",finishDrill);el("retryWrongBtn").addEventListener("click",()=>startDrill(drillWrong));el("drillHomeBtn").addEventListener("click",goHome);
+  initExamSettings();
+  el("gradeExamBtn").addEventListener("click",gradeExam);
+  el("reviewLastMistakesBtn").addEventListener("click",showLastMistakes);
+  el("lastMistakesHomeBtn").addEventListener("click",goHome);
+  el("homeBtn").addEventListener("click",goAppHome);el("openFeMenuBtn").addEventListener("click",goHome);el("startQuizBtn").addEventListener("click",openExam);el("startAPracticeBtn").addEventListener("click",openAPractice);el("startDrillBtn").addEventListener("click",()=>startDrill());el("startCramBtn").addEventListener("click",()=>startCram());el("sectionABtn").addEventListener("click",()=>switchSection("A"));el("sectionBBtn").addEventListener("click",()=>switchSection("B")); el("prevBtn").addEventListener("click",()=>goQuiz(-1));el("nextBtn").addEventListener("click",()=>goQuiz(1)); el("overviewBtn")?.addEventListener("click",showOverview);el("closeOverviewBtn").addEventListener("click",()=>{showView("quizView");renderQuiz();}); el("submitBtn").addEventListener("click",showSubmit);el("copyBtn").addEventListener("click",copyResult);el("backBtn").addEventListener("click",()=>{showView("quizView");renderQuiz();}); el("reviewFlag").addEventListener("change",e=>{const q=questions[current];quizState.review[q.id]=e.target.checked;saveQuizState();}); el("drillNextBtn").addEventListener("click",nextDrill);el("endDrillBtn").addEventListener("click",finishDrill);el("retryWrongBtn").addEventListener("click",()=>startDrill(drillWrong));el("drillHomeBtn").addEventListener("click",goHome);
   el("revealCramBtn").addEventListener("click",revealCram);el("cramKnownBtn").addEventListener("click",()=>judgeCram(true));el("cramUnsureBtn").addEventListener("click",()=>judgeCram(false));el("endCramBtn").addEventListener("click",finishCram);el("retryCramBtn").addEventListener("click",()=>startCram(cramUncertain));el("cramHomeBtn").addEventListener("click",goHome);
   el("resetExamTimerBtn").addEventListener("click",resetExamTimer);
   el("startBPracticeBtn").addEventListener("click",openBPractice);
