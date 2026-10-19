@@ -7,13 +7,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FE合格作戦">
-  <title>FE 9/6 合格作戦 - 最終模試</title>
+  <title>FE合格作戦 - 第12回予測問題</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <div class="app-shell">
     <header class="app-header">
-      <div><p class="eyebrow">FE 9/6 合格作戦</p><h1 id="appTitle">学習メニュー</h1></div>
+      <div><p class="eyebrow">FE 合格作戦</p><h1 id="appTitle">学習メニュー</h1></div>
       <button id="homeBtn" class="icon-btn" type="button" aria-label="ホーム">⌂</button>
     </header>
     <main>
@@ -35,11 +35,33 @@
           <h2>今日の学習</h2>
           <p>通常の予測問題と、科目A用語を反射的に答える「3秒特訓」を使い分けます。</p>
         </div>
+
+        <div class="exam-settings stats-card">
+          <h3>第12回 出題設定</h3>
+          <p class="settings-help">出題数と分野を指定できます。設定変更時は演習を新規開始します。</p>
+          <div class="exam-settings-row">
+            <label for="feACount">科目A 出題数（1～60問）</label>
+            <input id="feACount" type="number" inputmode="numeric" min="1" max="60" step="1" value="60">
+          </div>
+          <div class="exam-settings-row">
+            <label for="feBCount">科目B 出題数（1～20問）</label>
+            <input id="feBCount" type="number" inputmode="numeric" min="1" max="20" step="1" value="20">
+          </div>
+          <fieldset class="topic-settings">
+            <legend>科目B 出題分野（複数選択可）</legend>
+            <div id="feTopicChoices" class="topic-choice-grid"></div>
+            <div class="topic-actions">
+              <button id="feSelectAllTopicsBtn" class="secondary" type="button">全分野を選択</button>
+              <button id="feClearAllTopicsBtn" class="secondary" type="button">選択を解除</button>
+            </div>
+          </fieldset>
+          <p id="feExamPreview" class="exam-preview" aria-live="polite"></p>
+        </div>
         <div class="mode-grid">
           <button id="startQuizBtn" class="mode-card" type="button">
             <span class="mode-kicker">本番対策</span>
-            <strong>最終模試　第11回</strong>
-            <span>科目A 60問／科目B 20問・IPA公開／サンプル形式準拠</span>
+            <strong>最終模試　第12回</strong>
+            <span>科目A・Bの出題数／科目Bの分野を選択可能</span>
           </button>
           <button id="startDrillBtn" class="mode-card accent-card" type="button">
             <span class="mode-kicker">科目A 暗記</span>
@@ -54,8 +76,9 @@
           <button id="startBPracticeBtn" class="mode-card b-mode-card" type="button">
             <span class="mode-kicker">次回対策・最優先</span>
             <strong>科目B 実戦特訓</strong>
-            <span>20問・100分・長文／複数関数／最大10択</span>
+            <span>出題数・分野を選んで実戦演習</span>
           </button>
+          <button id="reviewLastMistakesBtn" class="mode-card" type="button"><span class="mode-kicker">復習</span><strong>前回の誤答解説</strong><span>直近の採点結果・第11回の間違いを見直す</span></button>
           <button id="openBGuideBtn" class="mode-card guide-mode-card" type="button">
             <span class="mode-kicker">読み方・計算の型</span>
             <strong>科目B 攻略表</strong>
@@ -146,15 +169,23 @@
       </section>
 
       <section id="resultView" class="result-view" hidden>
-        <h2>最終模試 第11回 提出用回答</h2>
-        <p>下のテキストをコピーしてChatGPTへ貼り付けてください。正解はこのアプリには入っていません。</p>
+        <h2>最終模試 第12回 提出用回答</h2>
+        <p>アプリ内で採点・誤答解説を確認できます。回答をコピーすればChatGPTによる追加分析も受けられます。</p>
+        <button id="gradeExamBtn" class="primary full" type="button">この回答を採点する</button>
+        <div id="gradeExamOutput" class="grading-output" hidden></div>
         <textarea id="resultText" readonly></textarea>
         <button id="copyBtn" class="primary full" type="button">回答をコピー</button>
         <button id="backBtn" class="secondary full" type="button">問題に戻る</button>
       </section>
 
+      <section id="lastMistakesView" class="result-view" hidden>
+        <h2 id="lastMistakesTitle">前回の誤答解説</h2>
+        <div id="lastMistakesSummary" class="result-summary"></div>
+        <div id="lastMistakesList" class="grading-output"></div>
+        <button id="lastMistakesHomeBtn" class="secondary full" type="button">問題選択へ戻る</button>
+      </section>
       <section id="overviewView" class="overview-view" hidden>
-        <div class="overview-head"><h2>最終模試 第11回 問題一覧</h2><button id="closeOverviewBtn" class="icon-btn" type="button">✕</button></div>
+        <div class="overview-head"><h2>最終模試 第12回 問題一覧</h2><button id="closeOverviewBtn" class="icon-btn" type="button">✕</button></div>
         <div id="overviewGrid" class="overview-grid"></div>
       </section>
       <section id="statsView" class="stats-view" hidden>
@@ -214,6 +245,9 @@
   </div>
   <script src="./terms.js"></script>
   <script src="./questions.js"></script>
+  <script src="./round12_a.js"></script>
+  <script src="./round12_b.js"></script>
+  <script src="./round12_init.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
