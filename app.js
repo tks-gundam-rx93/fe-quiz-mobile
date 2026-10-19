@@ -165,7 +165,7 @@
   function startExamTimer(){clearInterval(examTimerId);updateExamTimer();examTimerId=setInterval(updateExamTimer,1000);}
   function resetExamTimer(){quizState.deadlines=quizState.deadlines||{};delete quizState.deadlines[activeSection];saveQuizState();updateExamTimer();toast(`科目${activeSection}の時間をリセットしました`);}
   function switchSection(section){const indexes=sectionIndexes(section);if(!indexes.length){toast("選択した科目の問題がありません");return;}activeSection=section;if(!indexes.includes(current))current=indexes[0];renderQuiz();}
-  function openExam(){if(!sectionIndexes("B").length){toast("科目Bの出題分野を選択してください");return;}practiceMode="AB";showView("quizView");setTitle(`最終模試　第${QUIZ_ROUND}回`);renderQuiz();}
+  function openExam(){if(!sectionIndexes("B").length){toast("科目Bの出題分野を選択してください");return;}if(practiceMode!=="AB")current=sectionIndexes("A")[0];practiceMode="AB";showView("quizView");setTitle(`最終模試　第${QUIZ_ROUND}回`);renderQuiz();}
   function openAPractice(){practiceMode="A";showView("quizView");setTitle("科目A 集中特訓");switchSection("A");}
   function openBPractice(){practiceMode="B";showView("quizView");setTitle("科目B 実戦特訓");switchSection("B");}
   function gradedQuestions(){return practiceMode==="AB"?questions:questions.filter(q=>q.section===practiceMode);}
@@ -205,7 +205,7 @@
     return '<details class="grade-card"><summary><strong>科目'+q.section+' 問'+q.displayNo+'｜'+escapeHtml(q.category)+'</strong><span>正解：'+(EXAM_CHOICES[q.correct]||"?")+'</span></summary><div class="grade-body"><p>'+escapeHtml(q.question)+'</p>'+figure+code+'<p><strong>あなたの回答：</strong>'+escapeHtml(mine)+'</p><p><strong>正解：</strong>'+escapeHtml(right)+'</p><p><strong>解説：</strong>'+escapeHtml(explanation)+'</p></div></details>';
   }
   function gradeExam(){
-    const breakdown=["A","B"].map(section=>{
+    const breakdown=(practiceMode==="AB"?["A","B"]:[practiceMode]).map(section=>{
       const subset=gradedQuestions().filter(q=>q.section===section);
       return {section,total:subset.length,correct:subset.filter(q=>quizState.answers[q.id]===q.correct).length,
         unanswered:subset.filter(q=>quizState.answers[q.id]===undefined).length};
