@@ -59,14 +59,11 @@
     ["経営戦略","SWOT分析で新たな競合の市場参入はどの要素か。",["強み","弱み","機会","脅威"],3,"競合参入は外部環境のマイナス要因。"],
     ["経営戦略","顧客が複数の売り手を容易に選択できるとき強まる力はどれか。",["売り手の交渉力","買い手の交渉力","新規参入障壁","固定費"],1,"顧客側が容易に取引先を切り替えられると買い手の交渉力が強まる。"],
     ["企業活動","災害時に重要業務を継続・早期復旧するための計画はどれか。",["BCP","BOM","CRM","ERP"],0,"BCPは事業継続計画。"],
+    ["クラウド","クラウド事業者がOS・実行環境を管理し、利用者はアプリケーションを配置するサービスモデルはどれか。",["IaaS","PaaS","SaaS","オンプレミス"],1,"PaaSではアプリ実行基盤を事業者が提供する。"],
     ["法務","営業秘密としての保護要件の組合せはどれか。",["秘密管理性・有用性・非公知性","登録性・有償性・公開性","特許性・独創性・登録性","財産性・大量性・匿名性"],0,"営業秘密は秘密管理性・有用性・非公知性を満たす必要がある。"]
   ];
-  const fallback = (window.FE_TERMS || []).map(t => ({
-    category:t.cat, question:t.prompt+"。該当する用語はどれか。",
-    options:t.options.slice(), correct:t.answer, explain:t.explain || t.contrast || "定義と類似用語を対比する。"
-  }));
   const originals=rows.map(([category,question,options,correct,explain])=>({category,question,options,correct,explain}));
-  const all=originals.concat(fallback).slice(0,60);
+  const all=originals;
   if(all.length!==60) throw new Error("科目Aが60問ではありません");
   window.FE12_A=all.map((q,i)=>{
     const n=q.options.length,shift=(i*3+1)%n;
