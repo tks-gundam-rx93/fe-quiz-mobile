@@ -42,7 +42,7 @@
   if(typeof window.scrollTo==="function") window.scrollTo(0,0);
  }
  function stopTimer(){
-  if(activeSince!==null && session && !document.hidden){
+  if(activeSince!==null && session){
    const ent=current(), delta=Math.max(0,now()-activeSince);
    if(phases.slice(0,2).includes(session.phase))ent.understandMs+=delta;
    else if(phases.slice(2).includes(session.phase))ent.solveMs+=delta;
