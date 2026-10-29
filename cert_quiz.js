@@ -51,6 +51,7 @@ function setup(){
  counts.addEventListener("change",renderCounts);
  renderCounts();
  el("certStartBtn").textContent=session&&!session.submitted?"前回の続きから再開":"この条件で出題開始";
+ el("certNewBtn").hidden=!session||session.submitted;
  el("certReviewBtn").disabled=!last;
  show("certSetupView");
 }
@@ -133,8 +134,8 @@ function move(by){
  session.index=by===1&&session.index===n-1?0:Math.min(n-1,Math.max(0,session.index+by));
  persist();render();window.scrollTo({top:0,behavior:"instant"});
 }
-function reviewCard(q,a,expand){
- const heading="問"+(session?.questions?.findIndex(x=>x.id===q.id)+1||"?")+"　"+esc(q.category);
+function reviewCard(q,a,expand,number){
+ const heading="問"+number+"　"+esc(q.category);
  const answer=q.mode==="written"?esc(a||"未回答"):a===undefined?"未回答":choiceLetters[a]+"："+esc(q.options[a]);
  const reference=q.mode==="written"?esc(q.reference):choiceLetters[q.correct]+"："+esc(q.options[q.correct]);
  const explain=q.mode==="written"?esc(q.point):esc(q.explain);
@@ -172,11 +173,12 @@ function result(fromSaved=false){
  const heading=document.createElement("h3");heading.textContent=written?"記述問題と模範解答":"誤答・未回答の解説";el("certWrongList").appendChild(heading);
  const shown=written?r.questions:wrong;
  if(!shown.length){const p=document.createElement("p");p.textContent="全問正解です。";el("certWrongList").appendChild(p);}
- else for(const q of shown){const wrapper=document.createElement("div");wrapper.innerHTML=reviewCard(q,r.answers[q.id],written);el("certWrongList").appendChild(wrapper.firstElementChild);}
+ else for(const q of shown){const wrapper=document.createElement("div");wrapper.innerHTML=reviewCard(q,r.answers[q.id],written,r.questions.findIndex(x=>x.id===q.id)+1);el("certWrongList").appendChild(wrapper.firstElementChild);}
  el("certRetryWrongBtn").hidden=written||wrong.length===0;
  show("certResultView");
 }
 el("certStartBtn").addEventListener("click",start);
+el("certNewBtn").addEventListener("click",()=>{session=null;save("-session",null);start();});
 el("certReviewBtn").addEventListener("click",()=>result(true));
 el("certPrevBtn").addEventListener("click",()=>move(-1));
 el("certNextBtn").addEventListener("click",()=>move(1));
