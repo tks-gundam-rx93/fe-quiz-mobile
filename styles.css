@@ -61,3 +61,6 @@
 .grade-figure{max-width:100%;overflow-x:auto}
 .grade-figure svg{max-width:100%}
 @media(max-width:540px){.exam-settings{padding:12px}.topic-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fe-topic-choice{padding:9px 6px;font-size:.75rem}.grade-card summary{align-items:flex-start;flex-direction:column;gap:6px}}
+
+.reading-mode-card{grid-column:1/-1;min-height:116px;text-decoration:none;border:2px solid var(--accent);background:var(--selected)}
+.reading-mode-card .mode-kicker{color:var(--accent)}
