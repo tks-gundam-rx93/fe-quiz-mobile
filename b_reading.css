@@ -1,0 +1,48 @@
+
+/* FE科目B 読解特訓専用。既存テーマと配色を共有する。 */
+.reading-shell{padding-bottom:38px;max-width:760px}
+.reading-home-link{border-radius:8px;text-decoration:none;border:1px solid var(--border);background:var(--button);color:var(--button-text);padding:9px 12px;font-size:.82rem;font-weight:800}
+.reading-screen{display:grid;gap:12px}
+.reading-screen[hidden],.reading-code[hidden],#readingCodeBox[hidden],#readingRoleBox[hidden],#readingTraceBox[hidden],#readingAnswerBox[hidden],#readingResumeBtn[hidden],#readingResetBtn[hidden]{display:none!important}
+.reading-settings{display:grid;gap:8px}
+.reading-settings select{width:100%;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:10px;font-size:.94rem;min-height:43px}
+.reading-settings label{font-size:.85rem;font-weight:800}
+.reading-check{display:flex;gap:8px;align-items:center}
+.reading-check input{width:18px;height:18px;accent-color:var(--accent)}
+.reading-muted{font-size:.77rem;color:var(--muted);line-height:1.6;margin:5px 0}
+.reading-bar,.reading-clock{display:flex;justify-content:space-between;gap:9px;align-items:center}
+.reading-bar{font-size:.84rem;font-weight:800}
+.reading-clock{padding:9px 12px;border-radius:8px;background:var(--surface);border:1px solid var(--border);font-size:.82rem}
+.reading-clock strong{font-variant-numeric:tabular-nums;color:var(--accent);font-size:.98rem}
+.reading-card{max-height:none!important;overflow:visible!important}
+.reading-card h2{line-height:1.55;font-size:1.02rem;white-space:pre-wrap;overflow-wrap:anywhere}
+.reading-instruction{font-size:.85rem;line-height:1.55;padding:10px;border-left:3px solid var(--accent);background:var(--selected);border-radius:5px;margin:12px 0}
+.reading-code{border-radius:8px;background:var(--code-bg);color:var(--code-text);white-space:pre-wrap;overflow:visible;overflow-wrap:anywhere;word-break:normal;max-height:none;line-height:1.6;font-size:.82rem;padding:13px 12px}
+.reading-field{border:0;margin:0;padding:0;min-width:0}
+.reading-field legend{font-size:.9rem;font-weight:800;padding-bottom:8px}
+.reading-field .option-btn{display:block;min-height:48px}
+.reading-trace-editor{display:grid;gap:8px}
+.reading-trace-row{display:grid;grid-template-columns:44px 1fr;gap:5px;align-items:start;border:1px solid var(--border);border-radius:9px;padding:9px;background:var(--surface-2)}
+.reading-trace-row-num{color:var(--muted);font-size:.8rem;font-weight:800;padding-top:20px}
+.reading-trace-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(160px,100%),1fr));gap:8px}
+.reading-trace-field{display:grid;gap:4px;font-size:.75rem;font-weight:700;color:var(--muted)}
+.reading-trace-input{width:100%;min-width:0;border:1px solid var(--border);border-radius:6px;padding:9px;background:var(--surface);color:var(--text);font-size:16px}
+.reading-add{width:100%;margin:9px 0}
+.reading-trace-reference{display:grid;gap:7px}
+.reading-reference-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:6px;border-bottom:1px solid var(--border);padding:8px 0}
+.reading-reference-item{display:grid;gap:3px;overflow-wrap:anywhere;font-size:.85rem}
+.reading-reference-item small{font-weight:800;color:var(--muted);font-size:.68rem}
+.reading-summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.reading-summary-tile{border-radius:8px;padding:10px;background:var(--surface-2);border:1px solid var(--border)}
+.reading-summary-tile small{display:block;color:var(--muted);font-size:.7rem}
+.reading-summary-tile strong{font-size:1.25rem;font-variant-numeric:tabular-nums}
+.reading-result-weak{padding:9px 0;border-bottom:1px solid var(--border);font-size:.84rem;line-height:1.5}
+.reading-result-weak strong{display:block}
+.reading-result-weak small{color:var(--muted)}
+.reading-status-good{color:var(--success-border);font-weight:800}
+.reading-status-bad{color:var(--danger-border);font-weight:800}
+.reading-screen h3{margin:10px 0 7px}
+.reading-screen .stats-card h3:first-child{margin-top:0}
+.reading-screen p{line-height:1.6}
+@media(min-width:769px){.reading-shell{height:768px;max-height:768px;overflow-y:auto}}
+@media(max-width:768px){.reading-shell{min-height:100dvh;height:auto;max-height:none;overflow:visible}.reading-trace-row{grid-template-columns:32px 1fr}.reading-code{font-size:.79rem}.reading-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ja">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="theme-color" content="#0078d4">
+ <meta name="apple-mobile-web-app-capable" content="yes">
+ <title>科目B 読解特訓 | FE合格作戦</title>
+ <link rel="stylesheet" href="./styles.css">
+ <link rel="stylesheet" href="./b_reading.css">
+</head>
+<body>
+<div class="app-shell reading-shell">
+ <header class="app-header">
+  <div><p class="eyebrow">FE 合格作戦｜科目B</p><h1>読解特訓モード</h1></div>
+  <a href="./index.html" class="reading-home-link">HOME</a>
+ </header>
+ <main>
+  <section id="readingMenu" class="reading-screen">
+   <div class="hero-card">
+    <p class="mode-kicker">第12回・全20問に対応</p>
+    <h2>設問先読み → 関数の役割 → トレース → 解答</h2>
+    <p>「問題の理解」と「値の計算」にかかった時間を別々に測定します。誤答と読解が遅い問題を優先して復習します。</p>
+   </div>
+   <div class="stats-card reading-settings">
+    <h3>出題設定</h3>
+    <label for="readingCategory">分野</label>
+    <select id="readingCategory"></select>
+    <label for="readingCount">問題数</label>
+    <select id="readingCount"></select>
+    <label class="reading-check"><input id="readingWeakOnly" type="checkbox">弱点問題だけを再出題</label>
+    <p id="readingMenuHint" class="reading-muted" aria-live="polite"></p>
+    <button id="readingStartBtn" class="primary full" type="button">読解特訓を開始</button>
+    <button id="readingResumeBtn" class="secondary full" type="button" hidden>前回の続きから再開</button>
+    <button id="readingResetBtn" class="secondary full" type="button" hidden>保存中の演習を破棄する</button>
+   </div>
+   <div class="stats-card">
+    <h3>最近の学習状況</h3>
+    <div id="readingDashboard" aria-live="polite"></div>
+    <p class="reading-muted">弱点判定は「解答ミス・役割の誤判定・理解90秒超・解答180秒超」を使用。時間は画面を表示している間だけ記録します。</p>
+   </div>
+  </section>
+  <section id="readingDrill" class="reading-screen" hidden>
+   <div class="reading-bar">
+    <span id="readingProgress">第1問</span><span id="readingStep">設問先読み</span>
+   </div>
+   <div class="progress"><div id="readingProgressBar"></div></div>
+   <div class="reading-clock" aria-live="off">
+    <span>理解 <strong id="readingUnderstandTime">00:00</strong></span>
+    <span>解答 <strong id="readingSolveTime">00:00</strong></span>
+   </div>
+   <article class="question-card reading-card">
+    <div class="meta"><span class="badge">科目B</span><span id="readingTopic" class="badge soft"></span><span id="readingStageTag" class="badge warn"></span></div>
+    <h2 id="readingQuestion"></h2>
+    <p id="readingInstruction" class="reading-instruction"></p>
+    <div id="readingCodeBox" hidden><pre id="readingCode" class="reading-code"></pre></div>
+    <fieldset id="readingRoleBox" class="reading-field" hidden>
+     <legend id="readingRoleTitle">この処理の役割は？</legend>
+     <div id="readingRoleOptions" class="options"></div>
+    </fieldset>
+    <div id="readingTraceBox" hidden>
+     <h3 id="readingTraceTitle">トレース表</h3>
+     <p class="reading-muted">必要な値を自分で書き出す練習です。入力内容は正誤に影響しません。列は横スクロールせず、画面の縦方向に表示します。</p>
+     <div id="readingTraceEditor" class="reading-trace-editor"></div>
+     <button id="readingAddRowBtn" class="secondary reading-add" type="button">＋ 行を追加</button>
+    </div>
+    <fieldset id="readingAnswerBox" class="reading-field" hidden>
+     <legend>最終的な解答を選ぶ</legend>
+     <div id="readingAnswerOptions" class="options"></div>
+    </fieldset>
+   </article>
+   <button id="readingNextBtn" class="primary full" type="button">プログラムを表示する</button>
+   <button id="readingSkipBtn" class="secondary full" type="button">この問題を保留して次へ</button>
+   <button id="readingBackBtn" class="secondary full" type="button">学習メニューへ（記録を保存）</button>
+  </section>
+  <section id="readingFeedback" class="reading-screen" hidden>
+   <div class="stats-card">
+    <h2 id="readingFeedbackTitle">解答・理解時間</h2>
+    <div id="readingFeedbackSummary"></div>
+   </div>
+   <article class="question-card">
+    <h3>処理の役割</h3>
+    <p id="readingRoleFeedback"></p>
+    <h3>参考トレース表</h3>
+    <div id="readingTraceReference" class="reading-trace-reference"></div>
+    <h3>解説・見分け方</h3>
+    <p id="readingExplain"></p>
+    <p id="readingHint"></p>
+   </article>
+   <button id="readingContinueBtn" class="primary full" type="button">次の問題へ</button>
+   <button id="readingFeedbackHomeBtn" class="secondary full" type="button">学習メニューへ（記録を保存）</button>
+  </section>
+  <section id="readingResult" class="reading-screen" hidden>
+   <div class="hero-card">
+    <p class="mode-kicker">科目B 読解特訓・演習結果</p>
+    <h2>理解と解答の時間を分けて分析</h2>
+    <p>時間の長い分野と役割を誤認した問題を重点的に復習しましょう。</p>
+   </div>
+   <div id="readingResultSummary" class="stats-card"></div>
+   <div id="readingWeaknessList" class="stats-card"></div>
+   <button id="readingRetryBtn" class="primary full" type="button">今回の弱点だけ再出題</button>
+   <button id="readingResultHomeBtn" class="secondary full" type="button">問題選択に戻る</button>
+  </section>
+ </main>
+</div>
+<script src="./round12_b.js"></script>
+<script src="./b_reading_data.js"></script>
+<script src="./b_reading.js"></script>
+</body>
+</html>
