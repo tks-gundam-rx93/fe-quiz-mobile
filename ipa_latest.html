@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="theme-color" content="#0078d4">
+ <meta name="apple-mobile-web-app-capable" content="yes">
+ <title>IPA最新公開問題対策 | FE合格作戦</title>
+ <link rel="stylesheet" href="./styles.css">
+ <link rel="stylesheet" href="./ipa_latest.css">
+</head>
+<body>
+<div class="app-shell ipa-shell">
+ <header class="app-header">
+  <div><p class="eyebrow">FE 合格作戦｜IPA 2026年度公開問題対応</p><h1 id="ipaTitle">第13回 公開問題対応</h1></div>
+  <a class="ipa-home-link" href="./index.html">HOME</a>
+ </header>
+ <main>
+ <section id="ipaMenu" class="ipa-screen">
+  <div class="hero-card">
+   <p class="mode-kicker">IPA 2023～2026年度 公開問題を分析</p>
+   <h2>最新版：科目A 60問＋科目B 20問</h2>
+   <p>実際の公開問題の構造を参考にした、すべて新規作成の予測問題です。IPAの問題文・解答の転載ではありません。科目Bは空欄補充、複数関数、再帰の反復化、仕様照合を重点化。</p>
+  </div>
+  <div class="stats-card ipa-form">
+   <h3>出題設定</h3>
+   <label for="ipaSection">科目</label><select id="ipaSection"><option value="A">科目A｜知識・判断</option><option value="B">科目B｜プログラム・長文</option></select>
+   <label for="ipaCategory">出題分野</label><select id="ipaCategory"></select>
+   <label for="ipaCount">出題数</label><select id="ipaCount"></select>
+   <label class="ipa-check"><input id="ipaWeakOnly" type="checkbox">前回間違えた問題だけを出題する</label>
+   <p id="ipaPreview" class="ipa-muted" aria-live="polite"></p>
+   <button id="ipaStartBtn" class="primary full" type="button">新しい演習を開始</button>
+   <button id="ipaResumeBtn" class="secondary full" type="button" hidden>途中から再開する</button>
+   <button id="ipaLastBtn" class="secondary full" type="button" hidden>前回の採点・解説を確認</button>
+  </div>
+  <div class="stats-card">
+   <h3>改訂のポイント</h3>
+   <p class="ipa-muted">本試験は科目A：60問・90分、科目B：20問・100分。今回の問題集は出題形式の再現と未習得分野の発見を目的としています。本試験と同一問題が出ることは保証しません。</p>
+   <div id="ipaDashboard" class="ipa-muted"></div>
+   <div class="ipa-source-links">
+    <a href="https://www.ipa.go.jp/shiken/mondai-kaiotu/sg_fe/koukai/2026r08.html" target="_blank" rel="noopener noreferrer">IPA 2026公式公開問題と解答</a>
+    <a href="https://www.ipa.go.jp/shiken/mondai-kaiotu/sg_fe/koukai/index.html" target="_blank" rel="noopener noreferrer">IPA 2023～2026 公開問題一覧</a>
+    <a href="https://www.ipa.go.jp/shiken/syllabus/gaiyou.html" target="_blank" rel="noopener noreferrer">IPA 現行シラバス</a>
+   </div>
+   <p class="ipa-muted">注：2027年度開始予定の「新試験制度シラバス案」は、2026年度の現行試験とは区別しています。</p>
+  </div>
+ </section>
+ <section id="ipaQuiz" class="ipa-screen" hidden>
+  <div class="ipa-status"><strong id="ipaProgress"></strong><strong id="ipaClock" role="timer">--:--</strong></div>
+  <div class="progress"><div id="ipaProgressBar"></div></div>
+  <article class="question-card ipa-question-card">
+   <div class="meta"><span id="ipaBadge" class="badge"></span><span id="ipaTopic" class="badge soft"></span><span id="ipaPattern" class="badge warn"></span></div>
+   <h2 id="ipaPrompt"></h2>
+   <pre id="ipaCode" class="ipa-code" hidden></pre>
+   <div id="ipaOptions" class="options" aria-label="選択肢"></div>
+   <p id="ipaAnswerState" class="ipa-muted" aria-live="polite"></p>
+  </article>
+  <div class="ipa-nav">
+   <button id="ipaPrevBtn" class="secondary" type="button">前の問題</button>
+   <button id="ipaNextBtn" class="primary" type="button">次の問題</button>
+  </div>
+  <button id="ipaFinishBtn" class="submit" type="button">採点・解説へ進む</button>
+  <button id="ipaLeaveBtn" class="secondary full" type="button">中断して学習メニューへ</button>
+ </section>
+ <section id="ipaResult" class="ipa-screen" hidden>
+  <div class="hero-card"><h2>採点と弱点分析</h2><p>同じ分野を復習し、選択肢の根拠を説明できるようにしましょう。</p></div>
+  <div id="ipaResultSummary" class="stats-card"></div>
+  <div class="stats-card"><h3>分野別の誤答</h3><div id="ipaWeakness"></div></div>
+  <div class="stats-card"><h3>全問の正解・根拠・解説</h3><div id="ipaExplanations" class="ipa-explanations"></div></div>
+  <button id="ipaRetryBtn" class="primary full" type="button">誤答だけ再演習</button>
+  <button id="ipaResultMenuBtn" class="secondary full" type="button">問題選択へ戻る</button>
+ </section>
+ </main>
+</div>
+<script src="./ipa26_a.js"></script>
+<script src="./ipa26_b.js"></script>
+<script src="./ipa_latest.js"></script>
+</body>
+</html>
