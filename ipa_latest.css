@@ -1,0 +1,30 @@
+.ipa-shell{max-width:800px;padding-bottom:40px}
+.ipa-home-link{color:var(--text);text-decoration:none;border-radius:8px;border:1px solid var(--border);background:var(--button);padding:10px 12px;font-weight:800;font-size:.84rem}
+.ipa-screen{display:grid;gap:13px}
+.ipa-screen[hidden],#ipaCode[hidden],#ipaResumeBtn[hidden],#ipaLastBtn[hidden]{display:none!important}
+.ipa-form{display:grid;gap:8px}
+.ipa-form label{font-size:.82rem;font-weight:750}
+.ipa-form select{border:1px solid var(--border);border-radius:9px;padding:11px;background:var(--surface);color:var(--text);font-size:.93rem;min-width:0;max-width:100%}
+.ipa-check{display:flex;align-items:center;gap:9px;line-height:1.5}.ipa-check input{width:20px;height:20px;accent-color:var(--accent)}
+.ipa-muted{font-size:.81rem;color:var(--muted);margin:5px 0;line-height:1.6}
+.ipa-source-links{display:grid;gap:8px;margin:10px 0}
+.ipa-source-links a{display:block;border:1px solid var(--border);background:var(--surface-2);padding:10px;border-radius:8px;color:var(--accent);font-size:.85rem}
+.ipa-status{display:flex;justify-content:space-between;align-items:center;font-size:.82rem}
+#ipaClock{font-variant-numeric:tabular-nums;font-size:1.15rem;color:var(--accent)}
+.ipa-question-card{max-height:none!important;overflow:visible!important}
+.ipa-question-card h2{line-height:1.65;font-size:.99rem;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:9px}
+.ipa-code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.80rem;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.75;max-height:none;overflow:visible;border-radius:9px;padding:14px;background:var(--code-bg);color:var(--code-text);border:1px solid var(--border)}
+.ipa-question-card .option-btn{min-height:52px;line-height:1.55}
+.ipa-nav{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ipa-nav button:disabled{opacity:.5;cursor:not-allowed}
+.ipa-explanations{display:grid;gap:9px;margin-top:10px}
+.ipa-explanations details{border:1px solid var(--border);border-radius:9px;background:var(--surface-2);overflow:hidden}
+.ipa-explanations summary{padding:11px;font-size:.85rem;line-height:1.6;cursor:pointer;font-weight:700}
+.ipa-explanations summary span{display:block;color:var(--muted);font-size:.76rem;font-weight:500}
+.ipa-explanations details .ipa-detail{padding:12px;border-top:1px solid var(--border)}
+.ipa-detail p{white-space:pre-wrap;line-height:1.6;font-size:.84rem;margin:7px 0}
+.ipa-detail pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.77rem;border-radius:7px;background:var(--code-bg);color:var(--code-text);padding:9px}
+.ipa-weak-item{padding:9px 0;border-bottom:1px solid var(--border);font-size:.83rem}
+.ipa-summary-score{font-size:1.65rem;font-weight:800;line-height:1.4;margin:4px 0}
+@media(min-width:769px){.ipa-shell{height:768px;max-height:768px;overflow-y:auto}}
+@media(max-width:768px){.ipa-shell{min-height:100dvh;height:auto;max-height:none;overflow:visible}.ipa-code{font-size:.75rem}.ipa-form select{width:100%}}

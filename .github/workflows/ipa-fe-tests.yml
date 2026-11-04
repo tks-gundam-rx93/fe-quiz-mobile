@@ -1,0 +1,34 @@
+name: IPA FE quiz regression tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ipa26_*.js"
+      - "ipa_latest.*"
+      - "tests/ipa-quiz.test.cjs"
+      - ".github/workflows/ipa-fe-tests.yml"
+  pull_request:
+    paths:
+      - "ipa26_*.js"
+      - "ipa_latest.*"
+      - "tests/ipa-quiz.test.cjs"
+      - ".github/workflows/ipa-fe-tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Verify JavaScript syntax
+        run: |
+          node --check ipa26_a.js
+          node --check ipa26_b.js
+          node --check ipa_latest.js
+          node --check tests/ipa-quiz.test.cjs
+      - name: Static and headless quiz tests
+        run: node tests/ipa-quiz.test.cjs

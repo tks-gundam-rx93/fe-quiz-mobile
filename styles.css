@@ -64,3 +64,5 @@
 
 .reading-mode-card{grid-column:1/-1;min-height:116px;text-decoration:none;border:2px solid var(--accent);background:var(--selected)}
 .reading-mode-card .mode-kicker{color:var(--accent)}
+
+.ipa-new-mode-card{grid-column:1/-1;min-height:112px;text-decoration:none;border:2px solid var(--accent);background:var(--selected)}.ipa-new-mode-card .mode-kicker{color:var(--accent)}
